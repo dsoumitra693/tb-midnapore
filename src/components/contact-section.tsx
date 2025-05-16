@@ -91,7 +91,7 @@ export default function ContactSection() {
               }
             >
               <span className="text-gray-400 hover:text-emerald-400 block mt-1 transition-colors">
-                hello@travelbuddies.com
+                travelbuddiesmidnapore@gmail.com
               </span>
             </ContactCard>
             <ContactCard
