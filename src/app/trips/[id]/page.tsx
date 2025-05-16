@@ -207,7 +207,7 @@ function InfoItem({ icon: Icon, text, isPrice = false, delay }: {
   )
 }
 
-export function Section({
+function Section({
   title,
   items,
   icon: Icon,
