@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link'
 import TripCard from '@/components/trip-card'
 

@@ -1,58 +1,261 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function HeroSection() {
+    const [isMounted, setIsMounted] = useState(false);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.3,
+                delayChildren: 0.2
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: { type: "spring", stiffness: 100 }
+        }
+    };
+
+    // Handle touch events for swipe gestures
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
+        setTouchStart(e.targetTouches[0].clientY);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        setTouchEnd(e.targetTouches[0].clientY);
+    };
+
+    const handleTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+
+        const distance = touchStart - touchEnd;
+        const isDownSwipe = distance > 50;
+
+        if (isDownSwipe) {
+            document.getElementById('trips')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        setTouchStart(null);
+        setTouchEnd(null);
+    };
+
     return (
-        <section className="relative h-[90vh] w-full overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-900/60 to-gray-900/90 z-10"></div>
-            <Image
-                src="https://scontent.fccu13-2.fna.fbcdn.net/v/t39.30808-6/481316294_948123060838041_6477257046568340295_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=833d8c&_nc_ohc=VNwVXD9kmLkQ7kNvwGHLjzw&_nc_oc=Adn_HHQzgczEl-GY0Ra_F0PpQzZZav1klFN1-X3b4wmMNzbx8HP_J4h_-PhA5Wo19hvcWdb3u-VODbc1NpBHa0t-&_nc_zt=23&_nc_ht=scontent.fccu13-2.fna&_nc_gid=GAS4C3ELuEItN3K6CqiFmQ&oh=00_AfKVls9Eodz0zybCYJCb2m82CgErR3y0gf4ADkN3T84HPQ&oe=682BF037"
-                alt="Travel adventure background"
-                fill
-                priority
-                className="object-cover"
+        <section
+            className="relative h-[90vh] w-full overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+        >
+            {/* Gradient overlay with more transparency for glassmorphism */}
+            <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-900/50 to-gray-900/80 z-10"></div>
+
+            {/* Background image with subtle zoom effect */}
+            <motion.div
+                initial={{ scale: 1.1 }}
+                animate={{ scale: isMounted ? 1 : 1.1 }}
+                transition={{ duration: 10, ease: "easeOut" }}
+                className="absolute inset-0"
+            >
+                <Image
+                    src="https://scontent.fccu13-1.fna.fbcdn.net/v/t39.30808-6/481769258_955892846727729_7628561985089692412_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_ohc=QwrOE1jgyEcQ7kNvwFCNJQX&_nc_oc=AdnYkv4VXAvE93sb3p0exAq_8E23N_ZL0dzqt-lSCFGJPnlA9RIkd6bhNnU_6n4qBG0btY7XCHpr7U59C4vywp63&_nc_zt=23&_nc_ht=scontent.fccu13-1.fna&_nc_gid=gcKeB3fzIbmPhzkve7T34Q&oh=00_AfLIYKHcQ9otQICmiMoRaVKiFSOziq8-yxWBdbJ5kQ3KIQ&oe=682D2E42"
+                    alt="Travel adventure background"
+                    fill
+                    priority
+                    className="object-cover"
+                />
+            </motion.div>
+
+            {/* Content container with glassmorphic card */}
+            <motion.div
+                className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-center items-center"
+                variants={containerVariants}
+                initial="hidden"
+                animate={isMounted ? "visible" : "hidden"}
+            >
+                <motion.div
+                    className="bg-gradient-to-br from-gray-900/40 to-gray-800/30 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl max-w-4xl w-full text-center"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                    <motion.h1
+                        className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight"
+                        variants={itemVariants}
+                    >
+                        Explore Together, {" "}
+                        <motion.span
+                            className="text-emerald-400 relative inline-block"
+                            animate={{
+                                opacity: [0.7, 1, 0.7],
+                                textShadow: [
+                                    "0 0 5px rgba(52, 211, 153, 0.3)",
+                                    "0 0 15px rgba(52, 211, 153, 0.5)",
+                                    "0 0 5px rgba(52, 211, 153, 0.3)"
+                                ]
+                            }}
+                            transition={{
+                                duration: 3,
+                                repeat: Infinity,
+                                repeatType: "reverse"
+                            }}
+                        >
+                            Create Memories
+                            <span className="absolute left-0 -bottom-2 w-full h-1 bg-emerald-500/40 rounded-full blur-sm"></span>
+                        </motion.span>
+                    </motion.h1>
+
+                    <motion.p
+                        className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-8"
+                        variants={itemVariants}
+                    >
+                        Join our community of travelers for affordable group adventures or let us craft a personalized journey just for you.
+                    </motion.p>
+
+                    <motion.div
+                        className="flex flex-col sm:flex-row gap-4 justify-center"
+                        variants={itemVariants}
+                    >
+                        <motion.div
+                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        >
+                            <Link
+                                href="#trips"
+                                className="relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-bold text-white rounded-2xl transition-all duration-300 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg hover:shadow-xl hover:-translate-y-1 group active:translate-y-0"
+                            >
+                                <motion.span
+                                    className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    animate={{ opacity: [0, 0.1, 0] }}
+                                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                                ></motion.span>
+                                <motion.svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 mr-3"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    animate={{ x: [0, 3, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
+                                >
+                                    <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                                </motion.svg>
+                                <span className="relative text-lg md:text-xl">Discover Our Trips</span>
+                            </Link>
+                        </motion.div>
+
+                        <motion.div
+                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        >
+                            <Link
+                                href="/custom-trip"
+                                className="relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-bold rounded-2xl transition-all duration-300 border-2 border-emerald-400/70 bg-emerald-400/10 backdrop-blur-sm hover:bg-emerald-400/20 text-emerald-400 hover:text-white hover:border-emerald-500 shadow-sm hover:shadow-md active:translate-y-0"
+                            >
+                                <motion.svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 mr-3"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    animate={{
+                                        scale: [1, 1.2, 1],
+                                        rotate: [0, 5, -5, 0]
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        repeatType: "reverse",
+                                        ease: "easeInOut"
+                                    }}
+                                >
+                                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                                </motion.svg>
+                                <span className="relative text-lg md:text-xl">Plan Custom Trip</span>
+                            </Link>
+                        </motion.div>
+                    </motion.div>
+                </motion.div>
+
+                {/* Scroll indicator with glassmorphic effect */}
+                <motion.div
+                    className="absolute bottom-16 left-1/2 transform -translate-x-1/2 justify-center items-center flex flex-col"
+                    variants={itemVariants}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{
+                        opacity: [0.5, 1, 0.5],
+                        y: [0, 10, 0]
+                    }}
+                    transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatType: "loop"
+                    }}
+                >
+                    <motion.div
+                        className="w-8 h-12 rounded-full border-2 border-white/20 backdrop-blur-sm bg-white/5 flex items-start justify-center p-1"
+                        animate={{ boxShadow: ["0 0 0 rgba(255,255,255,0.1)", "0 0 10px rgba(255,255,255,0.3)", "0 0 0 rgba(255,255,255,0.1)"] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    >
+                        <motion.div
+                            className="w-1.5 h-3 bg-emerald-400 rounded-full"
+                            animate={{
+                                y: [0, 6, 0],
+                                opacity: [0.5, 1, 0.5]
+                            }}
+                            transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                repeatType: "loop"
+                            }}
+                        />
+                    </motion.div>
+                    <motion.p
+                        className="text-xs text-white/70 mt-2 text-center backdrop-blur-sm px-2 py-1 rounded-full bg-white/5"
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    >
+                        Swipe down
+                    </motion.p>
+                </motion.div>
+            </motion.div>
+
+            {/* Decorative glass orbs */}
+            <motion.div
+                className="absolute top-1/4 left-10 w-32 h-32 rounded-full bg-emerald-500/10 backdrop-blur-md z-10"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 0.4 }}
+                transition={{ duration: 1, delay: 1 }}
             />
-            <div className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
-                    Explore Together, <span className="text-emerald-400">Create Memories</span>
-                </h1>
-                <p className="text-lg md:text-xl text-gray-200 max-w-2xl mb-8">
-                    Join our community of travelers for affordable group adventures or let us craft a personalized journey just for you.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <Link
-                        href="#trips"
-                        className="relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-bold text-white rounded-2xl transition-all duration-300 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg hover:shadow-xl hover:-translate-y-1 group"
-                    >
-                        <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 mr-3 transition-transform duration-300 group-hover:translate-x-1"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                        </svg>
-                        <span className="relative text-lg md:text-xl">Discover Our Trips</span>
-                    </Link>
-
-                    <Link
-                        href="/custom-trip"
-                        className="relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-bold rounded-2xl transition-all duration-300 border-2 border-emerald-400 hover:bg-emerald-400/10 text-emerald-400 hover:text-white hover:border-emerald-500 shadow-sm hover:shadow-md"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 mr-3 transition-transform duration-300 group-hover:translate-x-1"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                        </svg>
-                        <span className="relative text-lg md:text-xl">Plan Custom Trip</span>
-                    </Link>
-                </div>
-
-            </div>
+            <motion.div
+                className="absolute bottom-1/3 right-10 w-24 h-24 rounded-full bg-blue-500/10 backdrop-blur-md z-10"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 0.3 }}
+                transition={{ duration: 1, delay: 1.3 }}
+            />
+            <motion.div
+                className="absolute top-2/3 left-1/4 w-16 h-16 rounded-full bg-purple-500/10 backdrop-blur-md z-10"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 0.2 }}
+                transition={{ duration: 1, delay: 1.6 }}
+            />
         </section>
-    )
+    );
 }

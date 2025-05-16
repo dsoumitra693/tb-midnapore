@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 
 interface Trip {
   id: string;
@@ -12,17 +13,45 @@ interface Trip {
   currentPrice: number;
 }
 
+const featureVariants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: { delay: i * 0.05, duration: 0.22, ease: "easeOut" }
+  }),
+};
+
 export default function TripCard({ trip }: { trip: Trip }) {
   return (
-    <div className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
+    <motion.div
+      className="relative bg-gradient-to-br from-gray-800/70 to-gray-900/60 border border-gray-700/40 backdrop-blur-lg p-0 rounded-2xl shadow-2xl group overflow-hidden"
+      whileHover={{ scale: 1.015, boxShadow: "0 8px 32px rgba(16, 185, 129, 0.18)" }}
+      whileTap={{ scale: 0.99 }}
+      transition={{ type: 'spring', stiffness: 600, damping: 30 }}
+      layout
+    >
+      {/* Glassy overlay for image */}
       <div className="relative h-48 overflow-hidden">
-        <Image
-          src={trip.image}
-          alt={trip.title}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-        />
+        <motion.div
+          className="w-full h-full"
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 1.01 }}
+          transition={{ duration: 0.22, ease: "easeOut" }}
+        >
+          <Image
+            src={trip.image}
+            alt={trip.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            priority
+          />
+          {/* Glass overlay (no blur!) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-gray-900/20 to-transparent" />
+        </motion.div>
       </div>
+
       <div className="p-6">
         <div className="flex items-center text-emerald-400 text-sm mb-2">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -31,36 +60,62 @@ export default function TripCard({ trip }: { trip: Trip }) {
           {trip.startDate} – {trip.endDate}
         </div>
         <h3 className="text-xl font-bold text-white mb-3">{trip.title}</h3>
-        <ul className="space-y-2 mb-6">
-          {trip.features.map((feature, index) => (
-            <li key={index} className="flex items-center text-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-400 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
+
+        {/* Features with staggered animation */}
+        <motion.ul
+          className="space-y-2 mb-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
+          {trip.features.map((feature, i) => (
+            <motion.li
+              key={i}
+              className="flex items-center text-gray-200"
+              variants={featureVariants}
+              custom={i}
+            >
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-900/40 mr-2 shadow-inner">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </span>
               {feature}
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
+
         <div className="flex items-baseline mb-4">
           <span className="text-gray-400 line-through text-sm mr-2">₹{trip.originalPrice}</span>
           <span className="text-white text-2xl font-bold">₹{trip.currentPrice}</span>
         </div>
-        <Link
-          href={`/trips/${trip.id}`}
-          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 group-hover:scale-105"
-        >
-          <span>View Details</span>
-          <svg
-            className="w-5 h-5 text-white transition-transform group-hover:translate-x-1"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
+
+        {/* Animated Glassy Button */}
+        <motion.div whileTap={{ scale: 0.97 }}>
+          <Link
+            href={`/trips/${trip.id}`}
+            className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-gradient-to-r from-emerald-500/80 to-emerald-600/80 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold shadow-md backdrop-blur-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </Link>
+            <span>View Details</span>
+            <motion.div whileTap={{ scale: 0.95 }}>
+              <motion.svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 ml-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                animate={{ x: [0, 3, 0] }}
+                transition={{ repeat: Infinity, duration: 0.6, ease: "easeInOut" }}
+              >
+                <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </motion.svg>
+            </motion.div>
+          </Link>
+        </motion.div>
       </div>
-    </div>
+
+      {/* Glassmorphic floating effect */}
+      <div className="absolute -top-8 -right-8 w-24 h-24 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
+    </motion.div>
   )
 }

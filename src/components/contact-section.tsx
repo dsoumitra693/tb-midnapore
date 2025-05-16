@@ -1,20 +1,23 @@
 "use client";
-
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import ContactCard from "./contact-card";
-
+import ContactForm from "./contact-form";
 
 export default function ContactSection() {
-  // Form state (for demonstration, not functional)
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
-  function handleChange(e: { target: { name: string; value: string; }; }) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   }
 
-  function handleSubmit(e: { preventDefault: () => void; }) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
     e.preventDefault();
-    // You can implement actual form submission here
     alert("Thank you for reaching out! We'll get back to you soon.");
     setForm({ name: "", email: "", message: "" });
   }
@@ -23,10 +26,22 @@ export default function ContactSection() {
     <section id="contact" className="py-16 bg-gray-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-2">Get in Touch</h2>
-          <p className="text-gray-400">
+          <motion.h2
+            className="text-3xl font-bold text-white mb-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Get in Touch
+          </motion.h2>
+          <motion.p
+            className="text-gray-400"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             Have questions or ready to book? Reach out to us!
-          </p>
+          </motion.p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Contact Info Cards */}
@@ -126,82 +141,8 @@ export default function ContactSection() {
               <span className="text-gray-400 block mt-1">Gosai Bazar, Chandrakona, West Bengal</span>
             </ContactCard>
           </div>
-
           {/* Contact Form */}
-          <form
-            className="bg-gray-800 rounded-xl p-6 md:p-8 shadow-lg"
-            onSubmit={handleSubmit}
-            autoComplete="off"
-          >
-            <h3 className="text-2xl font-bold text-white mb-6">
-              Send us a message
-            </h3>
-            <div className="space-y-5">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-gray-300 mb-2 font-medium"
-                >
-                  Your Name
-                </label>
-                <input
-                  required
-                  type="text"
-                  id="name"
-                  name="name"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  placeholder="Enter your name"
-                  value={form.name}
-                  onChange={handleChange}
-                  aria-label="Your Name"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-gray-300 mb-2 font-medium"
-                >
-                  Email Address
-                </label>
-                <input
-                  required
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  placeholder="Enter your email"
-                  value={form.email}
-                  onChange={handleChange}
-                  aria-label="Email Address"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-gray-300 mb-2 font-medium"
-                >
-                  Your Message
-                </label>
-                <textarea
-                  required
-                  id="message"
-                  name="message"
-                  rows={4}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  placeholder="How can we help you?"
-                  value={form.message}
-                  onChange={handleChange}
-                  aria-label="Your Message"
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="w-full py-3 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-lg transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-400"
-              >
-                Send Message
-              </button>
-            </div>
-          </form>
+          <ContactForm form={form} handleChange={handleChange} handleSubmit={handleSubmit} />
         </div>
       </div>
     </section>
