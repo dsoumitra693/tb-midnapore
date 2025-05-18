@@ -60,23 +60,27 @@ export default function ItinerarySection({ itinerary }: { itinerary: Trip['itine
               >
                 <span className="text-emerald-300 text-sm font-semibold">{idx + 1}</span>
               </motion.div>
-
-              {/* Day content */}
-              <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-4 border border-gray-700/30 hover:border-emerald-500/20 transition-all duration-300">
-
+              <div className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-2 border border-gray-700/30 hover:border-emerald-500/20 transition-all duration-300 mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="px-3 py-1 bg-emerald-500/20 rounded-full text-emerald-400 font-semibold text-sm md:text-base">
+                    Day {day.day}
+                  </div>
+                </div>
                 {day.details.map((item, i) => (
                   <motion.div
                     key={i}
-                    className="flex items-start gap-2 group space-y-3"
+                    className="flex flex-col gap-3 group mb-4 last:mb-0 mt-2"
                     initial={{ opacity: 0, x: -5 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.3, delay: 0.5 + idx * 0.1 + i * 0.05 }}
                   >
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0 group-hover:scale-125 transition-transform duration-300"></div>
-                    <p className="text-gray-300 text-sm md:text-base group-hover:text-white transition-colors duration-200">
-                      {item.trim()}
-                    </p>
+                    <div className="flex items-start gap-3 pl-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0 group-hover:scale-125 transition-transform duration-300"></div>
+                      <p className="text-gray-300 text-sm md:text-base group-hover:text-white transition-colors duration-200">
+                        {item.trim()}
+                      </p>
+                    </div>
                   </motion.div>
                 ))}
               </div>

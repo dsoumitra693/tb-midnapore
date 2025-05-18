@@ -97,7 +97,7 @@ export default function Footer() {
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </motion.svg>
               <span className="text-xl font-bold">
-                {data.pageDetails.title}<span className="text-emerald-400">{data.pageDetails.subtitle}</span>
+                {data.pageDetails.title}{" "}<span className="text-emerald-400">{data.pageDetails.subtitle}</span>
               </span>
             </Link>
             <p className="text-gray-400 mb-6">
@@ -275,7 +275,7 @@ export default function Footer() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, delay: 0.6 }}
         >
-          &copy; {new Date().getFullYear()} {data.pageDetails.title} {data.pageDetails.subtitle}. All rights reserved.
+          &copy; {new Date().getFullYear()} {data.pageDetails.title}{" "}{data.pageDetails.subtitle}. All rights reserved.
           <p className='mt-4'>
             Made with ❤️ by <a href="https://www.instagram.com/soumo.das_" className="text-emerald-400 text-bold hover:text-emerald-500 transition-colors" target="_blank" rel="noopener noreferrer">Soumo</a>
           </p>

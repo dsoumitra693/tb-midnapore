@@ -228,7 +228,8 @@ export default function TripPage() {
           }}
         >
           <a
-            href={`https://wa.me/919564965458?text=I%20want%20to%20join%20the%20${trip.title.replace(/\s+/g, '%20')}%20trip%20from%20${trip.startDate}`}
+            href={`https://wa.me/919564965458?text=I want to join the ${trip.title.replace(/\s+/g, '%20')} trip from ${trip.startDate}
+                   link: https://travelbuddiesmidnapore.in/trips/${trip._id}`}
             className="inline-flex items-center bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all duration-200 gap-3 ring-2 ring-emerald-500/20"
             target="_blank"
             rel="noopener noreferrer"
