@@ -67,7 +67,6 @@ export default function HeroSection() {
     useEffect(() => {
         const getHeroData = async () => {
             const data = await fetchPageDataHero();
-            console.log(data);
             setHeroData(data);
         };
         getHeroData();

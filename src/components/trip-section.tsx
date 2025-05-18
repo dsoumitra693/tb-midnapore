@@ -3,9 +3,12 @@
 import Link from "next/link";
 import TripCard from "./trip-card";
 import { motion } from "framer-motion";
-import { Trip } from "@/types";
+import { useTrips } from "@/hooks/useTrips";
 
-export default function TripSection({featuredTrips}:{featuredTrips: Trip[]}) {
+export default function TripSection() {
+    const { trips: featuredTrips } = useTrips({
+        limit: 3
+    })
 
     const containerVariants = {
         hidden: {},

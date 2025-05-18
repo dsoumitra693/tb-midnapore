@@ -51,7 +51,6 @@ export default function AboutSection() {
   useEffect(() => {
     const getAboutData = async () => {
       const data = await fetchPageDataAbout();
-      console.log(data);
       setAboutData(data);
     };
     getAboutData();

@@ -46,7 +46,6 @@ export default function useOneTrip(id: string) {
       try {
         const data = await fetchTrip(id as string)
         setTrip(data[0])
-        console.log(data[0])
         setLoading(false)
       } catch (error) {
         setError(error as Error)

@@ -66,7 +66,6 @@ export default function Footer() {
         fetchTripsName(),
         fetchPageDetailsFooter()
       ])
-      console.log({ trips: _data[0], pageDetails: _data[1] })
       setData({ trips: _data[0], pageDetails: _data[1] });
     };
     fetchData();
