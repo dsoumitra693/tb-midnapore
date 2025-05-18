@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import fetchPageDataAbout from "@/hooks/fetchPageDataAbout";
 
 const featureList = [
   {
@@ -40,6 +42,20 @@ const featureList = [
 ];
 
 export default function AboutSection() {
+  const [aboutData, setAboutData] = useState<{ title: string; description: string; image: { asset: { url: string } } }>({
+    title: '',
+    description: '',
+    image: { asset: { url: '' } }
+  });
+
+  useEffect(() => {
+    const getAboutData = async () => {
+      const data = await fetchPageDataAbout();
+      console.log(data);
+      setAboutData(data);
+    };
+    getAboutData();
+  }, []);
   return (
     <motion.section
       id="about-us"
@@ -66,7 +82,7 @@ export default function AboutSection() {
         >
           <h2 className="text-4xl font-bold text-white mb-1">Who We Are</h2>
           <div className="w-24 h-1 bg-emerald-500/60 mx-auto rounded-full mb-1 blur-sm"></div>
-          <p className="text-gray-300 max-w-2xl">Your local travel community in Midnapore</p>
+          <p className="text-gray-300 max-w-2xl">{aboutData?.title}</p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
@@ -81,7 +97,7 @@ export default function AboutSection() {
             <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-purple-500/20 backdrop-blur-sm rounded-2xl z-0 border border-white/10"></div>
             <div className="relative aspect-[4/3] m-3 rounded-xl overflow-hidden z-10">
               <Image
-                src="/team.jpeg"
+                src={aboutData.image.asset.url || '/team.jpeg'}
                 alt="Travel Buddies Team"
                 fill
                 className="object-cover"
@@ -110,7 +126,7 @@ export default function AboutSection() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 viewport={{ once: true }}
               >
-                We&apos;re a passionate community of travel enthusiasts based in Midnapore who believe that great travel experiences shouldn&apos;t break the bank. Founded in 2020, we organize budget-friendly group trips and personalized tours across India.
+                {aboutData?.description}
               </motion.p>
               
               <motion.p

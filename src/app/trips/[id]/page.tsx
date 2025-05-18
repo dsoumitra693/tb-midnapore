@@ -2,54 +2,55 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeftIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { ArrowLeftIcon, CalendarDaysIcon, ClockIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
+import { useParams } from 'next/navigation'
+import useOneTrip from '@/hooks/useOneTrip';
+import InfoItem from '@/components/trip-info-item';
+import PriceItem from '@/components/price-item';
+import ItinerarySection from '@/components/ininerary-section';
+import InclusionsSection from '@/components/inclusion-section';
+import { formatDateToLongString } from '@/utils';
 
-interface Trip {
-  id: string
-  title: string
-  image: string
-  dates: string
-  duration: string
-  cost: number
-  highlights: string[]
-  inclusions: string[]
-  exclusions: string[]
+export interface Trip {
+  _id: string;
+  image: { asset: { url: string }; alt: string };
+  title: string;
+  startDate: string;
+  endDate: string;
+  originalPrice: number;
+  currentPrice: number;
+  durationDays: number;
+  durationNights: number;
+  actualCost: number;
+  discountedCost: number;
+  meals: string[];
+  features: string[];
+  inclusions: string[];
+  description: string;
+  itinerary: { day: string; details: string[] }[];
 }
 
 export default function TripPage() {
-  const trip: Trip = {
-    id: 'meghalaya',
-    title: 'Meghalaya Monsoon Magic',
-    image: 'https://t4.ftcdn.net/jpg/04/32/18/41/240_F_432184158_lna3LLJcDCZvtfyCSv6lB6d7eVTls2yT.jpg',
-    dates: 'May 22 – May 27, 2025',
-    duration: '5 Days / 4 Nights',
-    cost: 9500,
-    highlights: [
-      'Explore Shillong & Cherrapunji',
-      'Visit Living Root Bridges',
-      'Boating at Dawki River',
-      'Group Bonfire Night',
-      'Local food tasting'
-    ],
-    inclusions: [
-      'Accommodation (shared)',
-      'Breakfast & Dinner',
-      'All local transport',
-      'Guide & coordination'
-    ],
-    exclusions: [
-      'Lunch',
-      'Personal expenses',
-      'Entry fees (if any)'
-    ]
-  }
+  const { id } = useParams()
+  const { trip, loading, error } = useOneTrip(id as string)
+
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState />
+  if (!trip) return <NotFoundState />
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
-      {/* Header with refined motion */}
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 font-inter">
+      {/* Decorative background elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-emerald-600/10 blur-3xl"></div>
+        <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full bg-purple-600/10 blur-3xl"></div>
+        <div className="absolute -bottom-40 left-1/3 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl"></div>
+      </div>
+
+      {/* Header */}
       <motion.header
-        className="sticky top-0 bg-gray-800/90 backdrop-blur-sm z-10 border-b border-gray-700"
+        className="sticky top-0 bg-gray-900/40 backdrop-blur-md z-10 border-b border-white/10"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
@@ -59,41 +60,54 @@ export default function TripPage() {
             href="/trips"
             className="text-emerald-400 hover:text-emerald-300 flex items-center gap-2 group"
           >
-            <motion.div
-              whileHover={{ x: -4 }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
-              <ArrowLeftIcon className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
-            </motion.div>
+            <ArrowLeftIcon className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
             <span className="hidden sm:inline">All Trips</span>
           </Link>
-          <h1 className="text-xl font-bold text-center truncate max-w-[50vw]">
+          <h1 className="text-lg md:text-xl font-bold text-center truncate max-w-[60vw]">
             {trip.title}
           </h1>
         </div>
       </motion.header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Optimized image container */}
+        {/* Hero Image */}
         <motion.div
-          className="relative aspect-video rounded-xl overflow-hidden mb-8 shadow-xl"
+          className="relative aspect-video rounded-2xl overflow-hidden mb-8 shadow-2xl ring-1 ring-white/10"
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
         >
           <Image
-            src={trip.image}
-            alt={trip.title}
+            src={trip.image.asset.url}
+            alt={trip.image.alt || trip.title}
             fill
             className="object-cover"
             priority
             sizes="(max-width: 768px) 100vw, 75vw"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-white drop-shadow-md">
+              {trip.title}
+            </h2>
+            <div className="flex flex-wrap items-center gap-3 mt-2">
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/30 text-emerald-100 text-sm font-medium">
+                {trip.durationDays} Days / {trip.durationNights} Nights
+              </span>
+              {trip.discountedCost < trip.actualCost && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-500/30 text-purple-100 text-sm font-medium">
+                  {Math.round((1 - trip.discountedCost / trip.actualCost) * 100)}% Off
+                </span>
+              )}
+            </div>
+          </div>
         </motion.div>
 
+        {/* Info Grid */}
         <div className="grid md:grid-cols-2 gap-6 mb-12">
+          {/* Trip Overview */}
           <motion.section
-            className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-700/50 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-2xl"
+            className="bg-gray-900/40 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 border border-white/5"
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -110,55 +124,100 @@ export default function TripPage() {
             </motion.h2>
             <div className="space-y-5">
               <InfoItem
-                icon={CalendarIcon}
-                text={trip.dates}
-                delay={0.2}
+                icon={CalendarDaysIcon}
+                text={`${formatDateToLongString(trip.startDate)} - ${formatDateToLongString(trip.endDate)}`}
               />
               <InfoItem
                 icon={ClockIcon}
-                text={trip.duration}
-                delay={0.3}
+                text={`${trip.durationDays} Days / ${trip.durationNights} Nights`}
               />
-              <InfoItem
-                icon={CurrencyRupeeIcon}
-                text={`₹${trip.cost.toLocaleString()}`}
-                isPrice={true}
-                delay={0.4}
+              <PriceItem
+                originalPrice={trip.actualCost}
+                currentPrice={trip.discountedCost}
               />
+
+              {/* Description */}
+              {trip.description && (
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <h3 className="text-lg font-semibold text-emerald-300 mb-2">About This Trip</h3>
+                  <p className="text-gray-300">{trip.description}</p>
+                </div>
+              )}
             </div>
           </motion.section>
 
-          {/* Highlights Sections */}
-          <motion.div
-            className="space-y-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
+          {/* Features */}
+          <motion.section
+            className="bg-gray-900/40 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 border border-white/5"
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Section
-              title="Itinerary Highlights"
-              items={trip.highlights}
-              icon={CheckIcon}
-              delay={0.4}
-            />
-            <Section
-              title="Inclusions"
-              items={trip.inclusions}
-              icon={CheckIcon}
-              delay={0.5}
-            />
-            <Section
-              title="Exclusions"
-              items={trip.exclusions}
-              icon={XMarkIcon}
-              delay={0.6}
-            />
-          </motion.div>
+            <h3 className="text-xl font-bold mb-4 text-emerald-400 relative inline-block">
+              Trip Features
+              <span className="absolute left-0 -bottom-2 w-2/3 h-1 bg-emerald-500/40 rounded-full blur-sm"></span>
+            </h3>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+              {trip.features.map((feature, idx) => (
+                <motion.div
+                  key={idx}
+                  className="flex items-center gap-3 p-2 bg-gray-800/30 backdrop-blur-sm rounded-lg border border-white/5 group hover:bg-emerald-900/20 transition-colors"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: 0.4 + idx * 0.05 }}
+                  whileHover={{ y: -2 }}
+                >
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center aspect-square">
+                    <CheckIcon className="w-5 h-5 text-emerald-400 aspect-square" />
+                  </div>
+                  <span className="text-gray-200 group-hover:text-white transition-colors">{feature}</span>
+                </motion.div>
+              ))}
+            </ul>
+          </motion.section>
         </div>
 
-        {/* Enhanced WhatsApp CTA */}
+        {/* Meals Section */}
+        {trip.meals && trip.meals.length > 0 && (
+          <motion.section
+            className="bg-gray-900/40 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 border border-white/5 mb-6"
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <h3 className="text-xl font-bold mb-4 text-emerald-400 relative inline-block">
+              Meals Included
+              <span className="absolute left-0 -bottom-2 w-2/3 h-1 bg-emerald-500/40 rounded-full blur-sm"></span>
+            </h3>
+            <div className="flex flex-wrap gap-3 mt-4">
+              {trip.meals.map((meal, idx) => (
+                <span
+                  key={idx}
+                  className="px-4 py-2 bg-emerald-500/10 text-emerald-300 rounded-lg border border-emerald-500/20"
+                >
+                  {meal}
+                </span>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {/* Itinerary Section */}
+        {trip.itinerary && trip.itinerary.length > 0 && (
+          <ItinerarySection itinerary={trip.itinerary} />
+        )}
+
+        {/* Inclusions Section */}
+        {trip.inclusions && trip.inclusions.length > 0 && (
+          <InclusionsSection inclusions={trip.inclusions} />
+        )}
+
+        {/* Book Now CTA */}
         <motion.div
-          className="fixed bottom-6 right-6 md:static md:mt-8"
+          className="fixed bottom-6 right-6 md:static md:mt-8 md:flex md:justify-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{
@@ -169,14 +228,14 @@ export default function TripPage() {
           }}
         >
           <a
-            href={`https://wa.me/919564965458?text=I%20want%20to%20join%20the%20${trip.title.replace(/\s+/g, '%20')}%20trip%20on%20${trip.dates}`}
-            className="inline-flex items-center bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 gap-3"
+            href={`https://wa.me/919564965458?text=I%20want%20to%20join%20the%20${trip.title.replace(/\s+/g, '%20')}%20trip%20from%20${trip.startDate}`}
+            className="inline-flex items-center bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all duration-200 gap-3 ring-2 ring-emerald-500/20"
             target="_blank"
             rel="noopener noreferrer"
           >
             <WhatsAppIcon className="w-6 h-6" />
-            <span className="hidden sm:inline">Join via WhatsApp</span>
-            <span className="sm:hidden">Join Now</span>
+            <span className="hidden sm:inline">Book This Trip</span>
+            <span className="sm:hidden">Book Now</span>
           </a>
         </motion.div>
       </main>
@@ -184,97 +243,60 @@ export default function TripPage() {
   )
 }
 
-function InfoItem({ icon: Icon, text, isPrice = false, delay }: {
-  icon: React.ComponentType<{ className?: string }>,
-  text: string,
-  isPrice?: boolean,
-  delay?: number
-}) {
+
+
+// Loading, Error and Not Found States
+function LoadingState() {
   return (
-    <motion.div
-      className="flex items-center gap-4 p-2 bg-gradient-to-br from-gray-800/60 via-gray-900/40 to-gray-800/60 backdrop-blur-md border border-gray-700/50 rounded-xl shadow-lg"
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3, delay }}
-    >
-      <div className="p-3 bg-emerald-400/20 rounded-lg backdrop-blur-sm shadow-inner">
-        <Icon className="w-6 h-6 text-emerald-400" />
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+      <div className="flex flex-col items-center">
+        <div className="w-16 h-16 border-4 border-gray-700 border-t-emerald-500 rounded-full animate-spin"></div>
+        <p className="mt-4 text-emerald-400 font-medium">Loading trip details...</p>
       </div>
-      <span className={`${isPrice ? 'text-2xl font-bold text-emerald-400' : 'text-gray-300'}`}>
-        {text}
-      </span>
-    </motion.div>
+    </div>
   )
 }
 
-function Section({
-  title,
-  items,
-  icon: Icon,
-  delay = 0,
-}: {
-  title: string;
-  items: string[];
-  icon: React.ComponentType<{ className?: string }>;
-  delay?: number;
-}) {
+function ErrorState() {
   return (
-    <motion.section
-      className="bg-gradient-to-br from-gray-800/90 to-gray-900/80 border border-gray-700/60 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-2xl"
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay }}
-    >
-      <motion.h3
-        className="text-2xl font-bold mb-6 text-emerald-400 relative inline-block"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: delay + 0.1 }}
-      >
-        {title}
-        <span className="absolute left-0 -bottom-2 w-2/3 h-1 bg-emerald-500/40 rounded-full blur-sm"></span>
-      </motion.h3>
-      <ul className="space-y-4">
-        {items.map((item, index) => (
-          <motion.li
-            key={index}
-            className="flex items-center gap-4 group rounded-lg transition"
-            initial={{ opacity: 0, x: -12 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.35, delay: delay + 0.15 + index * 0.08 }}
-          >
-            <span className="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-900/50 group-hover:bg-emerald-700/60 transition-colors shadow-inner">
-              <Icon className="w-5 h-5 text-emerald-400" />
-            </span>
-            <span className="text-gray-200 text-base group-hover:text-emerald-100 transition-colors">
-              {item}
-            </span>
-          </motion.li>
-        ))}
-      </ul>
-    </motion.section>
-  );
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+      <div className="bg-gray-800/60 backdrop-blur-xl p-6 rounded-xl border border-red-500/20 max-w-md w-full">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+          <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h2 className="text-xl font-bold text-center text-white mb-2">Error Loading Trip</h2>
+        <div className="mt-6 flex justify-center">
+          <Link href="/trips" className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+            Back to All Trips
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-const CalendarIcon = (props: { className?: string }) => (
-  <svg {...props} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-  </svg>
-)
-
-const ClockIcon = (props: { className?: string }) => (
-  <svg {...props} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-)
-
-const CurrencyRupeeIcon = (props: { className?: string }) => (
-  <svg {...props} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 8.25H9m6 3H9m3 6l-3-3h1.5a3 3 0 100-6M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-)
+function NotFoundState() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+      <div className="bg-gray-800/60 backdrop-blur-xl p-6 rounded-xl border border-gray-700/50 max-w-md w-full text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-700/50 flex items-center justify-center">
+          <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h2 className="text-xl font-bold text-white mb-2">Trip Not Found</h2>
+        <p className="text-gray-300">The trip you&apos;re looking for doesn&apos;t exist or has been removed.</p>
+        <div className="mt-6">
+          <Link href="/trips" className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors">
+            Explore Available Trips
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const WhatsAppIcon = (props: { className?: string }) => (
   <svg {...props} viewBox="0 0 24 24" fill="currentColor">

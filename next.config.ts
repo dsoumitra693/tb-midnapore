@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
       "t4.ftcdn.net",
       "as1.ftcdn.net",
       "as2.ftcdn.net",
+      "temple.yatradham.org",
+      "cdn.sanity.io"
     ],
   },
 };

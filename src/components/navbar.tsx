@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import { fetchPageDataNavbar } from '@/hooks/fecthPageDataNavbar'
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -40,6 +41,18 @@ export default function Navbar() {
     { href: '/#contact', label: 'Contact', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' }
   ]
 
+  const [navbarData, setNavbarData] = useState({
+    title: '',
+    subtitle: ''
+  })
+  useEffect(() => {
+    const getPageDataNavbar = async () => {
+      const data = await fetchPageDataNavbar()
+      setNavbarData(data)
+    }
+    getPageDataNavbar()
+  }, [])
+
   return (
     <motion.header 
       className="sticky top-0 z-50 bg-gradient-to-r from-gray-900/90 to-gray-800/90 backdrop-blur-lg border-b border-gray-700/50 shadow-lg"
@@ -63,9 +76,9 @@ export default function Navbar() {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-bold leading-none">
-                  Travel <span className="text-emerald-400">Buddies</span>
+                  {navbarData.title.split(' ')[0]} <span className="text-emerald-400">{navbarData.title.split(' ')[1]}</span>
                 </span>
-                <span className="text-xs text-gray-400 leading-none mt-1 px-1">Midnapore</span>
+                <span className="text-xs text-gray-400 leading-none mt-1 px-1">{navbarData.subtitle}</span>
               </div>
             </Link>
           </motion.div>

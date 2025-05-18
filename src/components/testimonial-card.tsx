@@ -2,15 +2,9 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { ITestimonial } from "@/types";
 
-interface Testimonial {
-    name: string;
-    location: string;
-    text: string;
-    avatar: string;
-}
-
-export default function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+export default function TestimonialCard({ testimonial }: { testimonial: ITestimonial }) {
     return (
         <motion.div
             className="bg-gradient-to-br from-gray-800/70 to-gray-900/60 border border-gray-700/60 backdrop-blur-lg p-6 md:p-7 rounded-2xl shadow-2xl transition-all duration-300 hover:border-emerald-500/60 group relative overflow-hidden"
@@ -30,7 +24,7 @@ export default function TestimonialCard({ testimonial }: { testimonial: Testimon
                     transition={{ type: "spring", stiffness: 160, damping: 11, delay: 0.1 }}
                 >
                     <Image
-                        src={testimonial.avatar}
+                        src={testimonial.avatarUrl}
                         alt={testimonial.name}
                         fill
                         className="object-cover"

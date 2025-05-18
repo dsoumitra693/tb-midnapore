@@ -3,8 +3,19 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import ContactCard from "./contact-card";
 import ContactForm from "./contact-form";
+import { redirect } from 'next/navigation'
 
-export default function ContactSection() {
+export default function ContactSection({contactData}:{
+  contactData: {
+    phone: string;
+    email: string;
+    location: {
+      name: string;
+      googleMapLink: string;
+    };
+    whatsapp: string;
+  }
+}) {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
   function handleChange(
@@ -18,7 +29,8 @@ export default function ContactSection() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
     e.preventDefault();
-    alert("Thank you for reaching out! We'll get back to you soon.");
+    redirect(`https://wa.me/${contactData.whatsapp}?text=Hello%20I%20am%20${form.name}%20and%20I%20am%20writing%20to%20you%20regarding%20%20${form.message}%20%20my%20email%20is%20${form.email}`);
+
     setForm({ name: "", email: "", message: "" });
   }
 
@@ -48,7 +60,7 @@ export default function ContactSection() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ContactCard
               title="Call Us"
-              href="tel:+919564965458"
+              href={`tel:${contactData.phone}`}
               icon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -67,12 +79,12 @@ export default function ContactSection() {
               }
             >
               <span className="text-gray-400 hover:text-emerald-400 block mt-1 transition-colors">
-                +91 9195649 65458
+                +91 {contactData.phone.slice(0,5) + ' ' + contactData.phone.slice(5,10)}
               </span>
             </ContactCard>
             <ContactCard
               title="Email"
-              href="mailto:hello@travelbuddies.com"
+              href={`mailto:${contactData.email}`}
               icon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -91,12 +103,12 @@ export default function ContactSection() {
               }
             >
               <span className="text-gray-400 hover:text-emerald-400 block mt-1 transition-colors">
-                travelbuddiesmidnapore@gmail.com
+                {contactData.email}
               </span>
             </ContactCard>
             <ContactCard
               title="WhatsApp"
-              href="https://wa.me/919564965458"
+              href={`https://wa.me/91${contactData.whatsapp}`}
               icon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -115,12 +127,12 @@ export default function ContactSection() {
               }
             >
               <span className="text-gray-400 hover:text-emerald-400 block mt-1 transition-colors">
-                +91 9195649 65458
+                +91 {contactData.whatsapp.slice(0,5) + ' ' + contactData.whatsapp.slice(5, 10)}
               </span>
             </ContactCard>
             <ContactCard
               title="Location"
-              href="https://maps.app.goo.gl/WA1Jd3M3EaV4fWyF6"
+              href={contactData.location.googleMapLink}
               icon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +150,7 @@ export default function ContactSection() {
                 </svg>
               }
             >
-              <span className="text-gray-400 block mt-1">Gosai Bazar, Chandrakona, West Bengal</span>
+              <span className="text-gray-400 block mt-1">{contactData.location.name}</span>
             </ContactCard>
           </div>
           {/* Contact Form */}

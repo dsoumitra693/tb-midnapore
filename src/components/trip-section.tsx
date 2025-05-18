@@ -3,40 +3,9 @@
 import Link from "next/link";
 import TripCard from "./trip-card";
 import { motion } from "framer-motion";
+import { Trip } from "@/types";
 
-export default function TripSection() {
-    const featuredTrips = [
-        {
-            id: 'darjeeling-escape',
-            title: 'Darjeeling Escape',
-            image: 'https://scontent.fccu13-1.fna.fbcdn.net/v/t39.30808-6/481998710_955880883395592_4558968641924199367_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_ohc=554OtrOqyuYQ7kNvwGzAgfs&_nc_oc=Adm9Zwq7fJkPAb83OJk7HWH36-cj62qU-oVwkbF_T0hSCOgv2lpZ_IpLhs5LcFwAPSJ7qAwoOWMAbRyr0u02B_Bm&_nc_zt=23&_nc_ht=scontent.fccu13-1.fna&_nc_gid=iOeP008QZ0kuVQbHepMc7Q&oh=00_AfLngmZL136h-NTYU-lZTO_J3Lo8WIVtgqjd9FHn9yvlvw&oe=682BDE95',
-            startDate: 'June 10',
-            endDate: 'June 14',
-            features: ['Toy Train Ride', 'Tea Garden Visit', 'Tiger Hill Sunrise'],
-            originalPrice: 12500,
-            currentPrice: 9999
-        },
-        {
-            id: 'goa-beach-getaway',
-            title: 'Goa Beach Getaway',
-            image: 'https://media.istockphoto.com/id/1157048446/photo/aerial-shot-of-the-beach-from-above-showing-sea-beach-mountain-and-a-coconut-plantation-goa.jpg?s=612x612&w=0&k=20&c=BE0ZCnKZj8xi9Zgx5meO77k-o8v8EPT9TwlsPvY3TMc=',
-            startDate: 'July 15',
-            endDate: 'July 19',
-            features: ['Beach Hopping', 'Water Sports', 'Sunset Cruise'],
-            originalPrice: 15000,
-            currentPrice: 12499
-        },
-        {
-            id: 'rishikesh-adventure',
-            title: 'Rishikesh Adventure',
-            image: 'https://media.istockphoto.com/id/1069264492/photo/spectacular-view-of-the-lakshman-temple-bathed-by-the-sacred-river-ganges-at-sunset.jpg?s=612x612&w=0&k=20&c=f-H_D86P9wO-q4E0Iv9VTy0EZeLa5izQUQCMSVCSzWk=',
-            startDate: 'August 5',
-            endDate: 'August 9',
-            features: ['River Rafting', 'Camping', 'Yoga Sessions'],
-            originalPrice: 14000,
-            currentPrice: 11999
-        }
-    ]
+export default function TripSection({featuredTrips}:{featuredTrips: Trip[]}) {
 
     const containerVariants = {
         hidden: {},
@@ -100,7 +69,7 @@ export default function TripSection() {
                     whileInView="show"
                     viewport={{ once: true }}
                 >
-                    {featuredTrips.map(trip => <TripCard trip={trip} key={trip.id} />)}
+                    {!!featuredTrips && featuredTrips.map(trip => <TripCard trip={trip} key={trip._id} />)}
                 </motion.div>
 
                 {/* Mobile "See All Trips" Button */}

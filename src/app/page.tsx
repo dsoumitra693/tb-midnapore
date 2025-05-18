@@ -1,19 +1,19 @@
 import HeroSection from '@/components/hero-section'
-import TripSection from '@/components/trip-section'
-import TestimonialsSection from '@/components/testimonials'
+import TestimonialsWrapper from '@/components/testimonial-wrapper'
 import CustomTripSection from '@/components/custom-trip-section'
 import AboutSection from '@/components/about-section'
-import ContactSection from '@/components/contact-section'
+import ContactWrapper from '@/components/contact-wrapper'
+import TripsWrapper from '@/components/trips-wrapper'
 
 export default function Home() {
   return (
     <>
       <HeroSection />
-      <TripSection />
-      <TestimonialsSection />
+      <TripsWrapper />
+      <TestimonialsWrapper />
       <CustomTripSection />
       <AboutSection />
-      <ContactSection />
+      <ContactWrapper />
     </>
   )
 }

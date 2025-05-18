@@ -1,46 +1,108 @@
 'use client'
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
+import { z } from 'zod'
 import {
-  UserIcon, PhoneIcon, EnvelopeIcon, MapPinIcon,
-  CalendarIcon, UserGroupIcon, CurrencyRupeeIcon, HeartIcon
+  UserIcon, EnvelopeIcon, MapPinIcon,
+  CalendarIcon, UserGroupIcon, CurrencyRupeeIcon, HeartIcon,
+  ExclamationCircleIcon
 } from '@heroicons/react/24/outline'
 
+const tripSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
+  email: z.string().email({ message: 'Invalid email address' }).optional().or(z.literal('')),
+  destination: z.string().min(2, { message: 'Destination is required' }),
+  dates: z.string().min(2, { message: 'Travel dates are required' }),
+  travelers: z.string().min(1, { message: 'Number of travelers is required' }),
+  budget: z.string().optional(),
+  preferences: z.string().max(500, { message: 'Preferences must be less than 500 characters' }).optional(),
+})
+
 export default function CustomTripPage() {
-  type FormDataKeys = 'name' | 'phone' | 'email' | 'destination' | 'dates' | 'travelers' | 'budget' | 'preferences';
-  
+  type FormDataKeys = 'name' | 'email' | 'destination' | 'dates' | 'travelers' | 'budget' | 'preferences';
+
   const [formData, setFormData] = useState<Record<FormDataKeys, string>>({
-      name: '', phone: '', email: '', destination: '',
-      dates: '', travelers: '', budget: '', preferences: ''
+    name: '', email: '', destination: '',
+    dates: '', travelers: '', budget: '', preferences: ''
   })
+  const [errors, setErrors] = useState<Partial<Record<FormDataKeys, string>>>({})
   const [submitting, setSubmitting] = useState(false)
+  const [touched, setTouched] = useState<Partial<Record<FormDataKeys, boolean>>>({})
   const router = useRouter()
 
+  const validate = () => {
+    const result = tripSchema.safeParse(formData)
+    if (!result.success) {
+      const fieldErrors: Partial<Record<FormDataKeys, string>> = {}
+      result.error.issues.forEach(issue => {
+        if (issue.path.length > 0) {
+          const fieldName = issue.path[0] as FormDataKeys
+          fieldErrors[fieldName] = issue.message
+        }
+      })
+      setErrors(fieldErrors)
+      return false
+    }
+    setErrors({})
+    return true
+  }
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const validateField = (field: FormDataKeys) => {
+    try {
+      const fieldSchema = tripSchema.shape[field]
+      fieldSchema.parse(formData[field])
+      setErrors(prev => ({ ...prev, [field]: undefined }))
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors(prev => ({
+          ...prev,
+          [field]: error.issues[0]?.message || `Invalid ${field}`
+        }))
+      }
+    }
+  }
+
+  const handleBlur = (field: FormDataKeys) => {
+    setTouched(prev => ({ ...prev, [field]: true }))
+    validateField(field)
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
+
+    // Mark all fields as touched
+    const allTouched = Object.keys(formData).reduce((acc, key) => {
+      acc[key as FormDataKeys] = true
+      return acc
+    }, {} as Record<FormDataKeys, boolean>)
+    setTouched(allTouched)
+
+    if (!validate()) return
+
     setSubmitting(true)
-    const message = `Hi! I'd like a custom trip plan.\n
-        Name: ${formData.name}\n
-        Phone: ${formData.phone}\n
-        Email: ${formData.email || 'N/A'}\n
-        Destination: ${formData.destination}\n
-        Dates: ${formData.dates}\n
-        Travelers: ${formData.travelers}\n
-        Budget: ₹${formData.budget || 'Not specified'}\n
-        Preferences: ${formData.preferences || 'Not specified'}`
+    const message = `Hi! I'd like a custom trip plan.
+
+Name: ${formData.name}
+Email: ${formData.email || 'N/A'}
+Destination: ${formData.destination}
+Dates: ${formData.dates}
+Travelers: ${formData.travelers}
+Budget: ₹${formData.budget || 'Not specified'}
+Preferences: ${formData.preferences || 'Not specified'}`
+
     const encodedMessage = encodeURIComponent(message)
     setTimeout(() => {
-        router.push(`https://wa.me/919564965458?text=${encodedMessage}`)
-        setSubmitting(false)
+      router.push(`https://wa.me/919564965458?text=${encodedMessage}`)
+      setSubmitting(false)
     }, 800) // Simulate loading
-}
+  }
 
   // Animation variants
   const fieldVariant = {
     hidden: { opacity: 0, y: 20 },
-    visible: (i:number) => ({
+    visible: (i: number) => ({
       opacity: 1, y: 0,
       transition: { delay: i * 0.07 }
     })
@@ -66,15 +128,14 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-2xl">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
           <div className="grid md:grid-cols-2 gap-6">
             {[
               { label: 'Full Name', icon: UserIcon, key: 'name', type: 'text', required: true, placeholder: 'e.g. Arpan Bhattacharya' },
-              { label: 'Phone / WhatsApp', icon: PhoneIcon, key: 'phone', type: 'tel', required: true, placeholder: 'e.g. +91 95649 65458' },
-              { label: 'Email (optional)', icon: EnvelopeIcon, key: 'email', type: 'email', required: false, placeholder: 'e.g. hello@travelbuddies.midnapore.com' },
+              { label: 'Email (optional)', icon: EnvelopeIcon, key: 'email', type: 'email', required: false, placeholder: 'e.g. hello@travelbuddies.com' },
               { label: 'Destination(s)', icon: MapPinIcon, key: 'destination', type: 'text', required: true, placeholder: 'e.g. Bali, Indonesia' },
               { label: 'Travel Dates', icon: CalendarIcon, key: 'dates', type: 'text', required: true, placeholder: 'e.g. July 1 – July 5' },
-              { label: 'Number of Travelers', icon: UserGroupIcon, key: 'travelers', type: 'number', required: true, placeholder: 'e.g. 2 Adults, 1 Child' },
+              { label: 'Number of Travelers', icon: UserGroupIcon, key: 'travelers', type: 'text', required: true, placeholder: 'e.g. 2 Adults, 1 Child' },
               { label: 'Budget per Person', icon: CurrencyRupeeIcon, key: 'budget', type: 'text', required: false, placeholder: '₹' }
             ].map((field, i) => (
               <motion.div
@@ -88,17 +149,39 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
                 <label className="flex items-center text-sm font-medium text-emerald-400">
                   <field.icon className="w-5 h-5 mr-2" />
                   {field.label}
+                  {field.required && <span className="text-red-500 ml-1">*</span>}
                 </label>
-                <input
-                  type={field.type}
-                  required={field.required}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow duration-200"
-                  value={formData[field.key as FormDataKeys]}
-                  onChange={e => setFormData({ ...formData, [field.key]: e.target.value })}
-                  placeholder={field.placeholder}
-                  onFocus={e => e.target.classList.add('ring-2', 'ring-emerald-400')}
-                  onBlur={e => e.target.classList.remove('ring-2', 'ring-emerald-400')}
-                />
+                <div className="relative">
+                  <input
+                    type={field.type}
+                    required={field.required}
+                    className={`w-full px-4 py-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow duration-200 ${touched[field.key as FormDataKeys] && errors[field.key as FormDataKeys]
+                        ? 'border-red-500 pr-10'
+                        : 'border-gray-700'
+                      }`}
+                    value={formData[field.key as FormDataKeys]}
+                    onChange={e => {
+                      setFormData({ ...formData, [field.key]: e.target.value })
+                      if (touched[field.key as FormDataKeys]) {
+                        validateField(field.key as FormDataKeys)
+                      }
+                    }}
+                    onBlur={() => handleBlur(field.key as FormDataKeys)}
+                    placeholder={field.placeholder}
+                    aria-invalid={Boolean(errors[field.key as FormDataKeys])}
+                    aria-describedby={`${field.key}-error`}
+                  />
+                  {touched[field.key as FormDataKeys] && errors[field.key as FormDataKeys] && (
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+                    </div>
+                  )}
+                </div>
+                {touched[field.key as FormDataKeys] && errors[field.key as FormDataKeys] && (
+                  <p id={`${field.key}-error`} className="text-red-500 text-xs mt-1 ml-1">
+                    {errors[field.key as FormDataKeys]}
+                  </p>
+                )}
               </motion.div>
             ))}
           </div>
@@ -115,22 +198,41 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
               <HeartIcon className="w-5 h-5 mr-2" />
               Preferences / Activities
             </label>
-            <textarea
-              rows={4}
-              placeholder="e.g. Beach, Adventure, Food"
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow duration-200"
-              value={formData.preferences}
-              onChange={e => setFormData({ ...formData, preferences: e.target.value })}
-              maxLength={500}
-              onFocus={e => e.target.classList.add('ring-2', 'ring-emerald-400')}
-              onBlur={e => e.target.classList.remove('ring-2', 'ring-emerald-400')}
-            />
+            <div className="relative">
+              <textarea
+                rows={4}
+                placeholder="e.g. Beach, Adventure, Food"
+                className={`w-full px-4 py-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow duration-200 ${touched.preferences && errors.preferences ? 'border-red-500' : 'border-gray-700'
+                  }`}
+                value={formData.preferences}
+                onChange={e => {
+                  setFormData({ ...formData, preferences: e.target.value })
+                  if (touched.preferences) {
+                    validateField('preferences')
+                  }
+                }}
+                onBlur={() => handleBlur('preferences')}
+                maxLength={500}
+                aria-invalid={Boolean(errors.preferences)}
+                aria-describedby="preferences-error"
+              />
+              {formData.preferences && (
+                <div className="absolute bottom-2 right-2 text-xs text-gray-400">
+                  {formData.preferences.length}/500
+                </div>
+              )}
+            </div>
+            {touched.preferences && errors.preferences && (
+              <p id="preferences-error" className="text-red-500 text-xs mt-1 ml-1">
+                {errors.preferences}
+              </p>
+            )}
           </motion.div>
 
           {/* Submit Button with micro-interaction */}
           <motion.button
             type="submit"
-            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/20"
             whileTap={{ scale: 0.95 }}
             disabled={submitting}
           >
@@ -153,14 +255,19 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
           </motion.button>
         </form>
 
-        <motion.p
-          className="mt-6 text-center text-gray-400 text-sm"
+        <motion.div
+          className="mt-8 text-center"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
-          We&apos;ll contact you within 24 hours with a personalized itinerary
-        </motion.p>
+          <p className="text-gray-400 text-sm">
+            We&apos;ll contact you within 24 hours with a personalized itinerary
+          </p>
+          <p className="text-gray-500 text-xs mt-2">
+            <span className="text-red-500">*</span> Required fields
+          </p>
+        </motion.div>
       </main>
     </div>
   )

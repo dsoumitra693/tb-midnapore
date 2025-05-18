@@ -1,136 +1,17 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import Link from 'next/link';
 import TripCard from '@/components/trip-card';
 import { motion } from 'framer-motion';
+import { useTrips } from '@/hooks/useTrips';
 
 export default function TripsPage() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredTrips, setFilteredTrips] = useState<Array<{
-        id: string;
-        title: string;
-        image: string;
-        startDate: string;
-        endDate: string;
-        features: string[];
-        originalPrice: number;
-        currentPrice: number;
-    }>>([]);
+    const {trips } = useTrips({
+        searchText: searchTerm
+    })
 
-    const trips = [
-        {
-            id: 'darjeeling-escape',
-            title: 'Darjeeling Escape',
-            image: 'https://scontent.fccu13-1.fna.fbcdn.net/v/t39.30808-6/481998710_955880883395592_4558968641924199367_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_ohc=554OtrOqyuYQ7kNvwGzAgfs&_nc_oc=Adm9Zwq7fJkPAb83OJk7HWH36-cj62qU-oVwkbF_T0hSCOgv2lpZ_IpLhs5LcFwAPSJ7qAwoOWMAbRyr0u02B_Bm&_nc_zt=23&_nc_ht=scontent.fccu13-1.fna&_nc_gid=iOeP008QZ0kuVQbHepMc7Q&oh=00_AfLngmZL136h-NTYU-lZTO_J3Lo8WIVtgqjd9FHn9yvlvw&oe=682BDE95',
-            startDate: 'June 10',
-            endDate: 'June 14',
-            features: ['Toy Train Ride', 'Tea Garden Visit', 'Tiger Hill Sunrise'],
-            originalPrice: 12500,
-            currentPrice: 9999
-        },
-        {
-            id: 'goa-beach-getaway',
-            title: 'Goa Beach Getaway',
-            image: 'https://media.istockphoto.com/id/1157048446/photo/aerial-shot-of-the-beach-from-above-showing-sea-beach-mountain-and-a-coconut-plantation-goa.jpg?s=612x612&w=0&k=20&c=BE0ZCnKZj8xi9Zgx5meO77k-o8v8EPT9TwlsPvY3TMc=',
-            startDate: 'July 15',
-            endDate: 'July 19',
-            features: ['Beach Hopping', 'Water Sports', 'Sunset Cruise'],
-            originalPrice: 15000,
-            currentPrice: 12499
-        },
-        {
-            id: 'rishikesh-adventure',
-            title: 'Rishikesh Adventure',
-            image: 'https://media.istockphoto.com/id/1069264492/photo/spectacular-view-of-the-lakshman-temple-bathed-by-the-sacred-river-ganges-at-sunset.jpg?s=612x612&w=0&k=20&c=f-H_D86P9wO-q4E0Iv9VTy0EZeLa5izQUQCMSVCSzWk=',
-            startDate: 'August 5',
-            endDate: 'August 9',
-            features: ['River Rafting', 'Camping', 'Yoga Sessions'],
-            originalPrice: 14000,
-            currentPrice: 11999
-        },
-        {
-            id: 'meghalaya-monsoon',
-            title: 'Meghalaya Monsoon Magic',
-            image: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80',
-            startDate: 'July 1',
-            endDate: 'July 6',
-            features: ['Living Root Bridges', 'Waterfall Trek', 'Cave Exploration'],
-            originalPrice: 13500,
-            currentPrice: 10999
-        },
-        {
-            id: 'sikkim-blossom',
-            title: 'Sikkim Spring Blossom',
-            image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-            startDate: 'April 10',
-            endDate: 'April 15',
-            features: ['Tsomgo Lake', 'Monastery Tour', 'Flower Valley Hike'],
-            originalPrice: 14500,
-            currentPrice: 11999
-        },
-        {
-            id: 'leh-ladakh-expedition',
-            title: 'Leh-Ladakh Expedition',
-            image: 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80',
-            startDate: 'September 1',
-            endDate: 'September 10',
-            features: ['Pangong Lake', 'Nubra Valley', 'Magnetic Hill'],
-            originalPrice: 28000,
-            currentPrice: 23999
-        },
-        {
-            id: 'andaman-island-hopping',
-            title: 'Andaman Island Hopping',
-            image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
-            startDate: 'November 5',
-            endDate: 'November 11',
-            features: ['Snorkeling', 'Havelock Beach', 'Cellular Jail'],
-            originalPrice: 26000,
-            currentPrice: 20999
-        },
-        {
-            id: 'jaipur-heritage-tour',
-            title: 'Jaipur Heritage Tour',
-            image: 'https://as1.ftcdn.net/v2/jpg/02/56/53/38/1000_F_256533834_Chxhh4CkOk6YVnvAKGPSN3jc40rSTFaV.jpg',
-            startDate: 'October 18',
-            endDate: 'October 22',
-            features: ['Amber Fort', 'City Palace', 'Local Bazaars'],
-            originalPrice: 11000,
-            currentPrice: 8999
-        },
-        {
-            id: 'kerala-backwaters',
-            title: 'Kerala Backwaters Retreat',
-            image: 'https://as1.ftcdn.net/v2/jpg/03/32/52/80/1000_F_332528013_S60jTsByjBTlfT3fGNyjWGg3WJotNLtg.jpg',
-            startDate: 'August 20',
-            endDate: 'August 25',
-            features: ['Houseboat Stay', 'Ayurvedic Spa', 'Tea Gardens'],
-            originalPrice: 15000,
-            currentPrice: 12499
-        },
-        {
-            id: 'varanasi-spiritual-journey',
-            title: 'Varanasi Spiritual Journey',
-            image: 'https://as2.ftcdn.net/v2/jpg/02/64/56/29/1000_F_264562951_MQRFSoIUDhNi3RVJByRKGtD2sVtRJb4W.jpg',
-            startDate: 'December 3',
-            endDate: 'December 7',
-            features: ['Ganga Aarti', 'Temple Walk', 'Boat Ride'],
-            originalPrice: 10500,
-            currentPrice: 8499
-        }
-    ]
-
-    useEffect(() => {
-        setFilteredTrips(
-            searchTerm
-                ? trips.filter(trip =>
-                    trip.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    trip.features.some(feature => feature.toLowerCase().includes(searchTerm.toLowerCase()))
-                )
-                : trips
-        );
-    }, [searchTerm]);
 
     const container = {
         hidden: { opacity: 0 },
@@ -198,7 +79,7 @@ export default function TripsPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <p>Showing {filteredTrips.length} amazing trips</p>
+                    <p>Showing {trips.length} amazing trips</p>
                 </motion.div>
 
                 {/* Trip Cards Grid */}
@@ -208,9 +89,9 @@ export default function TripsPage() {
                     initial="hidden"
                     animate="show"
                 >
-                    {filteredTrips.map((trip, index) => (
+                    {trips.map((trip, index) => (
                         <motion.div
-                            key={trip.id}
+                            key={trip._id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -223,7 +104,7 @@ export default function TripsPage() {
                 </motion.div>
 
                 {/* Empty State */}
-                {filteredTrips.length === 0 && (
+                {trips.length === 0 && (
                     <motion.div
                         className="text-center py-20"
                         initial={{ opacity: 0 }}

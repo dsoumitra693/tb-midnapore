@@ -1,26 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { Trip } from '@/types';
+import { formatDateToLongString } from '@/utils';
 
-interface Trip {
-  id: string;
-  image: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  features: string[];
-  originalPrice: number;
-  currentPrice: number;
-}
-
-const featureVariants = {
-  hidden: { opacity: 0, x: -10 },
-  visible: (i: number) => ({
-    opacity: 1,
-    x: 0,
-    transition: { delay: i * 0.05, duration: 0.22, ease: "easeOut" }
-  }),
-};
 
 export default function TripCard({ trip }: { trip: Trip }) {
   return (
@@ -40,8 +23,8 @@ export default function TripCard({ trip }: { trip: Trip }) {
           transition={{ duration: 0.22, ease: "easeOut" }}
         >
           <Image
-            src={trip.image}
-            alt={trip.title}
+            src={trip.image.asset.url}
+            alt={trip.image.alt || trip.title}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 33vw"
@@ -57,43 +40,19 @@ export default function TripCard({ trip }: { trip: Trip }) {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
           </svg>
-          {trip.startDate} – {trip.endDate}
+          {formatDateToLongString(trip.startDate)} – {formatDateToLongString(trip.endDate)}
         </div>
         <h3 className="text-xl font-bold text-white mb-3">{trip.title}</h3>
 
-        {/* Features with staggered animation */}
-        <motion.ul
-          className="space-y-2 mb-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          {trip.features.map((feature, i) => (
-            <motion.li
-              key={i}
-              className="flex items-center text-gray-200"
-              variants={featureVariants}
-              custom={i}
-            >
-              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-900/40 mr-2 shadow-inner">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </span>
-              {feature}
-            </motion.li>
-          ))}
-        </motion.ul>
-
         <div className="flex items-baseline mb-4">
-          <span className="text-gray-400 line-through text-sm mr-2">₹{trip.originalPrice}</span>
-          <span className="text-white text-2xl font-bold">₹{trip.currentPrice}</span>
+          <span className="text-gray-400 line-through text-sm mr-2">₹{trip.actualCost}</span>
+          <span className="text-white text-2xl font-bold">₹{trip.discountedCost}</span>
         </div>
 
         {/* Animated Glassy Button */}
         <motion.div whileTap={{ scale: 0.97 }}>
           <Link
-            href={`/trips/${trip.id}`}
+            href={`/trips/${trip._id}`}
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-gradient-to-r from-emerald-500/80 to-emerald-600/80 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold shadow-md backdrop-blur-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
           >
             <span>View Details</span>
@@ -104,7 +63,7 @@ export default function TripCard({ trip }: { trip: Trip }) {
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 animate={{ x: [0, 3, 0] }}
-                transition={{ repeat: Infinity, duration: 0.6, ease: "easeInOut" }}
+                transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
               >
                 <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </motion.svg>

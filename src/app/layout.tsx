@@ -1,9 +1,13 @@
+"use client"
+
 import Head from 'next/head'
 import Navbar from '@/components/navbar'
-import Footer from '@/components/footer'
+import { usePathname } from "next/navigation";
 import './globals.css'
+import Footer from '@/components/footer';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   return (
     <html lang="en">
       <Head>
@@ -13,9 +17,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <body className="bg-gray-900 text-white">
         <div className="min-h-screen bg-gray-900 text-white">
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          {pathname.startsWith('/studio') ? (<main>
+            {children}
+          </main>) :
+            (<>
+            <Navbar />
+              <main>{children}</main>
+              <Footer />
+            </>)}
         </div>
       </body>
     </html>

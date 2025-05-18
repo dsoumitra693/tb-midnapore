@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import fetchPageDataHero from "@/hooks/fetchPageDataHero";
 
 export default function HeroSection() {
     const [isMounted, setIsMounted] = useState(false);
@@ -57,6 +58,21 @@ export default function HeroSection() {
         setTouchEnd(null);
     };
 
+    const [heroData, setHeroData] = useState<{ title: string; description: string; image: { asset: { url: string } } }>({
+        title: '',
+        description: '',
+        image: { asset: { url: '' } }
+    });
+
+    useEffect(() => {
+        const getHeroData = async () => {
+            const data = await fetchPageDataHero();
+            console.log(data);
+            setHeroData(data);
+        };
+        getHeroData();
+    }, []);
+
     return (
         <section
             className="relative h-[90vh] w-full overflow-hidden"
@@ -75,7 +91,7 @@ export default function HeroSection() {
                 className="absolute inset-0"
             >
                 <Image
-                    src="https://scontent.fccu13-1.fna.fbcdn.net/v/t39.30808-6/481769258_955892846727729_7628561985089692412_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_ohc=QwrOE1jgyEcQ7kNvwFCNJQX&_nc_oc=AdnYkv4VXAvE93sb3p0exAq_8E23N_ZL0dzqt-lSCFGJPnlA9RIkd6bhNnU_6n4qBG0btY7XCHpr7U59C4vywp63&_nc_zt=23&_nc_ht=scontent.fccu13-1.fna&_nc_gid=gcKeB3fzIbmPhzkve7T34Q&oh=00_AfLIYKHcQ9otQICmiMoRaVKiFSOziq8-yxWBdbJ5kQ3KIQ&oe=682D2E42"
+                    src={heroData?.image?.asset?.url}
                     alt="Travel adventure background"
                     fill
                     priority
@@ -100,7 +116,7 @@ export default function HeroSection() {
                         className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight"
                         variants={itemVariants}
                     >
-                        Explore Together, {" "}
+                        {heroData?.title.split(",")[0]}, {" "}
                         <motion.span
                             className="text-emerald-400 relative inline-block"
                             animate={{
@@ -117,7 +133,7 @@ export default function HeroSection() {
                                 repeatType: "reverse"
                             }}
                         >
-                            Create Memories
+                            {heroData?.title.split(",")[1]}
                             <span className="absolute left-0 -bottom-2 w-full h-1 bg-emerald-500/40 rounded-full blur-sm"></span>
                         </motion.span>
                     </motion.h1>
@@ -126,7 +142,7 @@ export default function HeroSection() {
                         className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-8"
                         variants={itemVariants}
                     >
-                        Join our community of travelers for affordable group adventures or let us craft a personalized journey just for you.
+                        {heroData?.description}
                     </motion.p>
 
                     <motion.div
@@ -192,48 +208,6 @@ export default function HeroSection() {
                             </Link>
                         </motion.div>
                     </motion.div>
-                </motion.div>
-
-                {/* Scroll indicator with glassmorphic effect */}
-                <motion.div
-                    className="absolute bottom-16 left-1/2 transform -translate-x-1/2 justify-center items-center flex flex-col"
-                    variants={itemVariants}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{
-                        opacity: [0.5, 1, 0.5],
-                        y: [0, 10, 0]
-                    }}
-                    transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatType: "loop"
-                    }}
-                >
-                    <motion.div
-                        className="w-8 h-12 rounded-full border-2 border-white/20 backdrop-blur-sm bg-white/5 flex items-start justify-center p-1"
-                        animate={{ boxShadow: ["0 0 0 rgba(255,255,255,0.1)", "0 0 10px rgba(255,255,255,0.3)", "0 0 0 rgba(255,255,255,0.1)"] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                    >
-                        <motion.div
-                            className="w-1.5 h-3 bg-emerald-400 rounded-full"
-                            animate={{
-                                y: [0, 6, 0],
-                                opacity: [0.5, 1, 0.5]
-                            }}
-                            transition={{
-                                duration: 1.5,
-                                repeat: Infinity,
-                                repeatType: "loop"
-                            }}
-                        />
-                    </motion.div>
-                    <motion.p
-                        className="text-xs text-white/70 mt-2 text-center backdrop-blur-sm px-2 py-1 rounded-full bg-white/5"
-                        animate={{ opacity: [0.5, 1, 0.5] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                    >
-                        Swipe down
-                    </motion.p>
                 </motion.div>
             </motion.div>
 

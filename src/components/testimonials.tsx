@@ -1,34 +1,35 @@
 "use client";
 
+import { ITestimonial} from "@/types";
 import TestimonialCard from "./testimonial-card";
 import { motion } from "framer-motion";
 
-export default function TestimonialsSection() {
-  const testimonials = [
-    {
-      id: 1,
-      name: 'Priya Sharma',
-      location: 'Kolkata',
-      avatar: 'https://randomuser.me/api/portraits/women/45.jpg',
-      text: 'The Darjeeling trip was perfectly organized! From the toy train ride to the tea garden visits, everything was memorable. Will definitely travel with Travel Buddies again!'
-    },
-    {
-      id: 2,
-      name: 'Rahul Gupta',
-      location: 'Midnapore',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-      text: 'As a solo traveler, I was hesitant at first, but the group was so welcoming! Made new friends and the itinerary was perfect for the budget. Highly recommended!'
-    },
-    {
-      id: 3,
-      name: 'Sneha Das',
-      location: 'Kharagpur',
-      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-      text: 'They planned a custom trip for my family to Sikkim and it was flawless! Great attention to detail and excellent value for money. Will be booking our next vacation with them soon!'
-    }
-  ];
 
-  // Animation variants for the cards
+export default function TestimonialsSection({ testimonials }: { testimonials: ITestimonial[] }) {
+  // const testimonials = [
+  //   {
+  //     id: 1,
+  //     name: 'Priya Sharma',
+  //     location: 'Kolkata',
+  //     avatar: 'https://randomuser.me/api/portraits/women/45.jpg',
+  //     text: 'The Darjeeling trip was perfectly organized! From the toy train ride to the tea garden visits, everything was memorable. Will definitely travel with Travel Buddies again!'
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Rahul Gupta',
+  //     location: 'Midnapore',
+  //     avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+  //     text: 'As a solo traveler, I was hesitant at first, but the group was so welcoming! Made new friends and the itinerary was perfect for the budget. Highly recommended!'
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Sneha Das',
+  //     location: 'Kharagpur',
+  //     avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+  //     text: 'They planned a custom trip for my family to Sikkim and it was flawless! Great attention to detail and excellent value for money. Will be booking our next vacation with them soon!'
+  //   }
+  // ];
+
   const container = {
     hidden: {},
     show: {
@@ -64,9 +65,9 @@ export default function TestimonialsSection() {
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
         >
-          {testimonials.map((testimonial) => (
+          {!!testimonials &&testimonials.map((testimonial) => (
             <motion.div
-              key={testimonial.id}
+              key={testimonial._id}
               variants={card}
               whileHover={{ y: -8, boxShadow: "0 8px 24px rgba(16,185,129,0.15)" }}
               whileTap={{ scale: 0.97 }}
