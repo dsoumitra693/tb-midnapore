@@ -48,7 +48,7 @@ export default function TripSection() {
                         transition={{ type: "spring", stiffness: 300 }}
                         className="hidden md:flex"
                     >
-                        <Link href="/trips" className="flex items-center text-emerald-400 hover:text-emerald-300 transition-colors">
+                        <Link href="/home/trips" className="flex items-center text-emerald-400 hover:text-emerald-300 transition-colors">
                             See all trips
                             <motion.svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +85,7 @@ export default function TripSection() {
                 >
                     <p className="text-white text-lg font-semibold mb-2">Want to explore more?</p>
                     <motion.div whileTap={{ scale: 0.95 }}>
-                        <Link href="/trips" className="btn-outline flex justify-center items-center text-emerald-400 hover:text-emerald-300 transition-colors">
+                        <Link href="/home/trips" className="btn-outline flex justify-center items-center text-emerald-400 hover:text-emerald-300 transition-colors">
                             See All Trips
                             <motion.svg
                                 xmlns="http://www.w3.org/2000/svg"

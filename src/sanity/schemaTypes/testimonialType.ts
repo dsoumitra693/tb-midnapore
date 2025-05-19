@@ -22,6 +22,12 @@ export const testimonialType = defineType({
       type: 'image',
       title: 'Avatar',
       options: { hotspot: true },
+      initialValue: {
+        asset: {
+          _type: 'reference',
+          _ref: ''
+        }
+      },
       fields: [
         defineField({
           name: 'alt',
@@ -29,14 +35,13 @@ export const testimonialType = defineType({
           title: 'Alternative text',
         })
       ],
-      validation: Rule => Rule.required()
     }),
     defineField({
       name: 'text',
       type: 'text',
       title: 'Testimonial Text',
       rows: 4,
-      validation: Rule => Rule.required().min(20).max(500)
+      validation: Rule => Rule.required().min(4).max(500)
     })
   ]
 })

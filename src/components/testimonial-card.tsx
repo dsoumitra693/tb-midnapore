@@ -24,7 +24,7 @@ export default function TestimonialCard({ testimonial }: { testimonial: ITestimo
                     transition={{ type: "spring", stiffness: 160, damping: 11, delay: 0.1 }}
                 >
                     <Image
-                        src={testimonial.avatarUrl}
+                        src={testimonial.avatarUrl || "https://i.pinimg.com/originals/08/35/0c/08350cafa4fabb8a6a1be2d9f18f2d88.jpg"}
                         alt={testimonial.name}
                         fill
                         className="object-cover"

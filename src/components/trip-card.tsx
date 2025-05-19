@@ -52,7 +52,7 @@ export default function TripCard({ trip }: { trip: Trip }) {
         {/* Animated Glassy Button */}
         <motion.div whileTap={{ scale: 0.97 }}>
           <Link
-            href={`/trips/${trip._id}`}
+            href={`/home/trips/${trip._id}`}
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-gradient-to-r from-emerald-500/80 to-emerald-600/80 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold shadow-md backdrop-blur-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
           >
             <span>View Details</span>

@@ -2,9 +2,6 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react';
-import { fetchTripsName } from '@/hooks/getTripsName';
-import { fetchPageDetailsFooter } from '@/hooks/fetchPageDetailsFooter';
 
 const sectionVariant = {
   hidden: { opacity: 0, y: 30 },
@@ -17,8 +14,8 @@ const sectionVariant = {
 
 const iconTap = { scale: 0.85, rotate: -10 };
 
-export default function Footer() {
-  const [data, setData] = useState<{
+export default function Footer({ footerData }: {
+  footerData: {
     trips: { title: string, _id: string }[]
     pageDetails: {
       title: string;
@@ -38,38 +35,8 @@ export default function Footer() {
         whatsappGroup: string;
       }
     }
-  }>({
-    trips: [],
-    pageDetails: {
-      title: "",
-      subtitle: "",
-      contactsection: {
-        phone: "",
-        email: "",
-        address: "",
-        location: {
-          name:"",
-          googleMapLink:""
-        },
-        youtube: "",
-        facebook: "",
-        instagram: "",
-        whatsapp: "",
-        whatsappGroup: ""
-      }
-    }
-  })
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const _data = await Promise.all([
-        fetchTripsName(),
-        fetchPageDetailsFooter()
-      ])
-      setData({ trips: _data[0], pageDetails: _data[1] });
-    };
-    fetchData();
-  }, []);
+  }
+}) {
 
   return (
     <footer className="bg-gray-900 border-t border-gray-800 pt-12 pb-6 mt-12">
@@ -83,7 +50,7 @@ export default function Footer() {
             viewport={{ once: true, amount: 0.2 }}
             custom={0}
           >
-            <Link href="/" className="flex items-center space-x-2 mb-6">
+            <Link href="/home" className="flex items-center space-x-2 mb-6">
               <motion.svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 text-emerald-400"
@@ -96,7 +63,7 @@ export default function Footer() {
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </motion.svg>
               <span className="text-xl font-bold">
-                {data.pageDetails.title}{" "}<span className="text-emerald-400">{data.pageDetails.subtitle}</span>
+                {footerData.pageDetails.title}{" "}<span className="text-emerald-400">{footerData.pageDetails.subtitle}</span>
               </span>
             </Link>
             <p className="text-gray-400 mb-6">
@@ -106,7 +73,7 @@ export default function Footer() {
               {/* Social Icons with tap feedback */}
               {[
                 {
-                  href: data.pageDetails.contactsection.facebook,
+                  href: footerData.pageDetails.contactsection.facebook,
                   label: "Facebook",
                   icon: (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -115,7 +82,7 @@ export default function Footer() {
                   )
                 },
                 {
-                  href: data.pageDetails.contactsection.instagram,
+                  href: footerData.pageDetails.contactsection.instagram,
                   label: "Instagram",
                   icon: (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -124,7 +91,7 @@ export default function Footer() {
                   )
                 },
                 {
-                  href: `https://wa.me/${data.pageDetails.contactsection.whatsapp}`,
+                  href: `https://wa.me/${footerData.pageDetails.contactsection.whatsapp}`,
                   label: "WhatsApp",
                   icon: (
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +103,7 @@ export default function Footer() {
                   )
                 },
                 {
-                  href: data.pageDetails.contactsection.youtube,
+                  href: footerData.pageDetails.contactsection.youtube,  
                   label: "YouTube",
                   icon: (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -173,10 +140,10 @@ export default function Footer() {
             <h3 className="text-white text-lg font-semibold mb-6">Quick Links</h3>
             <ul className="space-y-3">
               {[
-                { href: "/", label: "Home" },
-                { href: "/trips", label: "Trips" },
-                { href: "#about-us", label: "About Us" },
-                { href: "#contact", label: "Contact" }
+                { href: "/home", label: "Home" },
+                { href: "/home/trips", label: "Trips" },
+                { href: "/home/#about-us", label: "About Us" },
+                { href: "/home/#contact", label: "Contact" }
               ].map((item) => (
                 <motion.li key={item.label} whileTap={{ scale: 0.94 }}>
                   <Link href={item.href} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
@@ -197,12 +164,12 @@ export default function Footer() {
           >
             <h3 className="text-white text-lg font-semibold mb-6">Our Trips</h3>
             <ul className="space-y-3">
-              {[...data.trips, {
+              {[...footerData.trips, {
                 title: "Custom Trips",
                 _id: "custom-trip"
               }].map((item) => (
                 <motion.li key={item.title} whileTap={{ scale: 0.94 }}>
-                  <Link href={item._id === "custom-trip" ? "/custom-trip" : `/trips/${item._id}`} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
+                  <Link href={item._id === "custom-trip" ? "/home/custom-trip" : `/home/trips/${item._id}`} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
                     {item.title}
                   </Link>
                 </motion.li>
@@ -221,7 +188,7 @@ export default function Footer() {
             <h3 className="text-white text-lg font-semibold mb-6">Contact Info</h3>
             <ul className="space-y-3">
               <li>
-                <Link href={data.pageDetails.contactsection.location.googleMapLink} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
+                <Link href={footerData.pageDetails.contactsection.location.googleMapLink} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
                   <motion.svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 mr-2 mt-0.5 text-emerald-500"
@@ -231,11 +198,11 @@ export default function Footer() {
                   >
                     <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                   </motion.svg>
-                  {data.pageDetails.contactsection.location.name}
+                  {footerData.pageDetails.contactsection.location.name}
                 </Link>
               </li>
               <motion.li whileTap={{ scale: 0.94 }}>
-                <a href={`tel:${data.pageDetails.contactsection.phone}`} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
+                <a href={`tel:${footerData.pageDetails.contactsection.phone}`} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
                   <motion.svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 mr-2 text-emerald-500"
@@ -245,11 +212,11 @@ export default function Footer() {
                   >
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                   </motion.svg>
-                  +91 {data.pageDetails.contactsection.phone.slice(0, 5) + ' ' + data.pageDetails.contactsection.phone.slice(5, 10)}
+                  +91 {footerData.pageDetails.contactsection.phone.slice(0, 5) + ' ' + footerData.pageDetails.contactsection.phone.slice(5, 10)}
                 </a>
               </motion.li>
               <motion.li whileTap={{ scale: 0.94 }}>
-                <a href={`mailto:${data.pageDetails.contactsection.email}`} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
+                <a href={`mailto:${footerData.pageDetails.contactsection.email}`} className="text-gray-400 hover:text-emerald-400 transition-colors flex items-center">
                   <motion.svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 mr-2 text-emerald-500"
@@ -260,7 +227,7 @@ export default function Footer() {
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                     <path d="M18 8.118l-8 4-8-4V16a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                   </motion.svg>
-                  {data.pageDetails.contactsection.email}
+                  {footerData.pageDetails.contactsection.email} 
                 </a>
               </motion.li>
             </ul>
@@ -274,7 +241,7 @@ export default function Footer() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, delay: 0.6 }}
         >
-          &copy; {new Date().getFullYear()} {data.pageDetails.title}{" "}{data.pageDetails.subtitle}. All rights reserved.
+          &copy; {new Date().getFullYear()} {footerData.pageDetails.title}{" "}{footerData.pageDetails.subtitle}. All rights reserved.
           <p className='mt-4'>
             Made with ❤️ by <a href="https://www.instagram.com/soumo.das_" className="text-emerald-400 text-bold hover:text-emerald-500 transition-colors" target="_blank" rel="noopener noreferrer">Soumo</a>
           </p>

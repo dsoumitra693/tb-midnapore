@@ -4,9 +4,11 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { fetchPageDataNavbar } from '@/hooks/fecthPageDataNavbar'
 
-export default function Navbar() {
+export default function Navbar({navbarData}:{navbarData:{
+  title:string;
+  subtitle:string;
+}}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const mobileMenuRef = useRef<HTMLDivElement | null>(null)
@@ -30,28 +32,17 @@ export default function Navbar() {
   }, [pathname])
 
   const isActive = (path: string) => {
-    if (path === '/') return pathname === '/'
+    if (path === '/home') return pathname === '/home'
     return pathname.startsWith(path)
   }
 
   const navigationLinks = [
-    { href: '/', label: 'Home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
-    { href: '/trips', label: 'Trips', icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { href: '/#about-us', label: 'About', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { href: '/#contact', label: 'Contact', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' }
+    { href: '/home', label: 'Home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
+    { href: '/home/trips', label: 'Trips', icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { href: '/home#about-us', label: 'About', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { href: '/home#contact', label: 'Contact', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' }
   ]
 
-  const [navbarData, setNavbarData] = useState({
-    title: '',
-    subtitle: ''
-  })
-  useEffect(() => {
-    const getPageDataNavbar = async () => {
-      const data = await fetchPageDataNavbar()
-      setNavbarData(data)
-    }
-    getPageDataNavbar()
-  }, [])
 
   return (
     <motion.header 
@@ -68,7 +59,7 @@ export default function Navbar() {
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
-            <Link href="/" className="flex items-center space-x-2 group">
+            <Link href="/home" className="flex items-center space-x-2 group">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-700/60 to-emerald-900/60 backdrop-blur-sm flex items-center justify-center group-hover:from-emerald-600/60 group-hover:to-emerald-800/60 transition-all duration-300 border border-emerald-600/30 shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-300" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -113,7 +104,7 @@ export default function Navbar() {
               className="ml-2"
             >
               <Link
-                href="/#contact"
+                href="/home/#contact"
                 className="px-4 py-2 rounded-lg font-medium bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white shadow-md transition-all duration-300 border border-emerald-500/50"
               >
                 Book Now
@@ -226,7 +217,7 @@ export default function Navbar() {
               transition={{ duration: 0.3, delay: 0.2 }}
             >
               <Link
-                href="/#contact"
+                href="/home/#contact"
                 className="flex items-center justify-center py-3 px-4 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-medium shadow-md transition-all duration-300 border border-emerald-500/50"
                 onClick={() => setMobileMenuOpen(false)}
               >

@@ -1,17 +1,11 @@
 "use client";
-
-import { useState} from 'react';
 import Link from 'next/link';
 import TripCard from '@/components/trip-card';
 import { motion } from 'framer-motion';
 import { useTrips } from '@/hooks/useTrips';
 
 export default function TripsPage() {
-    const [searchTerm, setSearchTerm] = useState('');
-    const {trips } = useTrips({
-        searchText: searchTerm
-    })
-
+    const {trips } = useTrips({})
 
     const container = {
         hidden: { opacity: 0 },
@@ -41,7 +35,7 @@ export default function TripsPage() {
             >
                 <div className="container mx-auto px-4 py-5">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 justify-between w-full">
                             <Link href="/" className="text-white hover:text-emerald-400 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -52,7 +46,7 @@ export default function TripsPage() {
                             </h1>
                         </div>
 
-                        {/* Search Bar */}
+                        {/* Search Bar
                         <div className="relative w-full md:w-auto">
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +60,7 @@ export default function TripsPage() {
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </motion.header>

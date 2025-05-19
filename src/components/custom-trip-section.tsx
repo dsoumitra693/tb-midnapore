@@ -74,7 +74,7 @@ export default function CustomTripSection() {
                             transition={{ type: "spring", stiffness: 300, damping: 15 }}
                         >
                             <Link
-                                href="/custom-trip"
+                                href="/home/custom-trip"
                                 className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-400/80 to-emerald-600/90 hover:from-emerald-500 hover:to-emerald-700 text-white font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2 group backdrop-blur-md"
                             >
                                 {/* Left Icon */}

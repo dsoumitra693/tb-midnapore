@@ -1,19 +1,8 @@
-import HeroSection from '@/components/hero-section'
-import TestimonialsWrapper from '@/components/testimonial-wrapper'
-import CustomTripSection from '@/components/custom-trip-section'
-import AboutSection from '@/components/about-section'
-import ContactWrapper from '@/components/contact-wrapper'
-import TripSection from '@/components/trip-section'
+"use client"
+import { redirect,usePathname } from 'next/navigation'
 
-export default function Home() {
-  return (
-    <>
-      <HeroSection />
-      <TripSection />
-      <TestimonialsWrapper />
-      <CustomTripSection />
-      <AboutSection />
-      <ContactWrapper />
-    </>
-  )
+export default function Root() {
+  const pathname = usePathname()
+  if(pathname.startsWith('/studio')) redirect('/studio')
+  else redirect('/home')
 }

@@ -1,38 +1,58 @@
-"use client";
+"use client"
 
-import { ITestimonial} from "@/types";
+import { useState } from "react";
+import { ITestimonial } from "@/types";
 import TestimonialCard from "./testimonial-card";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence
+import AddTestimonialForm from "./add-testimonial-form";
+import uploadTestimonial from "@/hooks/uploadTestimonial";
 
+export default function TestimonialsSection({ testimonials: initialTestimonials }: { testimonials: ITestimonial[] }) {
+  const [testimonials, setTestimonials] = useState(initialTestimonials);
+  const [form, setForm] = useState<ITestimonial>({
+    name: "",
+    location: "",
+    text: "",
+    _id: "",
+    avatarUrl: ""
+  });
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-export default function TestimonialsSection({ testimonials }: { testimonials: ITestimonial[] }) {
-  // const testimonials = [
-  //   {
-  //     id: 1,
-  //     name: 'Priya Sharma',
-  //     location: 'Kolkata',
-  //     avatar: 'https://randomuser.me/api/portraits/women/45.jpg',
-  //     text: 'The Darjeeling trip was perfectly organized! From the toy train ride to the tea garden visits, everything was memorable. Will definitely travel with Travel Buddies again!'
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Rahul Gupta',
-  //     location: 'Midnapore',
-  //     avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-  //     text: 'As a solo traveler, I was hesitant at first, but the group was so welcoming! Made new friends and the itinerary was perfect for the budget. Highly recommended!'
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Sneha Das',
-  //     location: 'Kharagpur',
-  //     avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-  //     text: 'They planned a custom trip for my family to Sikkim and it was flawless! Great attention to detail and excellent value for money. Will be booking our next vacation with them soon!'
-  //   }
-  // ];
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddReview = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const newTestimonial: ITestimonial = {
+      _id: Math.random().toString(36).substr(2, 9),
+      name: form.name,
+      text: form.text,
+      location: form.location,
+      avatarUrl: form.avatarUrl
+    };
+    setIsUploading(true);
+    uploadTestimonial(newTestimonial)
+      .then((res) => {
+        if (res) {
+          setTestimonials(prev => [newTestimonial, ...prev]);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Failed to upload testimonial");
+      }).finally(() => {
+        setIsUploading(false);
+        setForm({ name: "", location: "", text: "", _id: "", avatarUrl: "" });
+      });
+  };
 
   const container = {
-    hidden: {},
+    hidden: { opacity: 0 },
     show: {
+      opacity: 1,
       transition: {
         staggerChildren: 0.18
       }
@@ -41,7 +61,15 @@ export default function TestimonialsSection({ testimonials }: { testimonials: IT
 
   const card = {
     hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80, damping: 15 } }
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 80,
+        damping: 15
+      }
+    }
   };
 
   return (
@@ -57,26 +85,37 @@ export default function TestimonialsSection({ testimonials }: { testimonials: IT
           <h2 className="text-3xl font-bold text-white mb-2">Happy Travelers</h2>
           <p className="text-gray-400">What our community says about their experiences</p>
         </motion.div>
-
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16"
           variants={container}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
+          animate="show" // Changed from whileInView
         >
-          {!!testimonials &&testimonials.map((testimonial) => (
-            <motion.div
-              key={testimonial._id}
-              variants={card}
-              whileHover={{ y: -8, boxShadow: "0 8px 24px rgba(16,185,129,0.15)" }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            >
-              <TestimonialCard testimonial={testimonial} />
-            </motion.div>
-          ))}
+          <AnimatePresence>
+            {testimonials.map((testimonial) => (
+              <motion.div
+                key={testimonial._id}
+                variants={card}
+                initial="hidden"
+                animate="show"
+                exit="hidden"
+                whileHover={{ y: -8, boxShadow: "0 8px 24px rgba(16,185,129,0.15)" }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <TestimonialCard testimonial={testimonial} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </motion.div>
+
+        <AddTestimonialForm
+          handleSubmit={handleAddReview}
+          form={form}
+          handleChange={handleChange}
+          isUploading={isUploading}
+          error={error}
+        />
       </div>
     </section>
   );

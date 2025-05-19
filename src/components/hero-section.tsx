@@ -4,9 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import fetchPageDataHero from "@/hooks/fetchPageDataHero";
 
-export default function HeroSection() {
+export default function HeroSection({ heroData }: { heroData: { title: string; description: string; image: { asset: { url: string } } } }) {
     const [isMounted, setIsMounted] = useState(false);
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -58,19 +57,6 @@ export default function HeroSection() {
         setTouchEnd(null);
     };
 
-    const [heroData, setHeroData] = useState<{ title: string; description: string; image: { asset: { url: string } } }>({
-        title: '',
-        description: '',
-        image: { asset: { url: '' } }
-    });
-
-    useEffect(() => {
-        const getHeroData = async () => {
-            const data = await fetchPageDataHero();
-            setHeroData(data);
-        };
-        getHeroData();
-    }, []);
 
     return (
         <section
@@ -154,7 +140,7 @@ export default function HeroSection() {
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
                             <Link
-                                href="#trips"
+                                href="/home#trips"
                                 className="relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-bold text-white rounded-2xl transition-all duration-300 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg hover:shadow-xl hover:-translate-y-1 group active:translate-y-0"
                             >
                                 <motion.span
@@ -182,7 +168,7 @@ export default function HeroSection() {
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
                             <Link
-                                href="/custom-trip"
+                                href="/home/custom-trip"
                                 className="relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-bold rounded-2xl transition-all duration-300 border-2 border-emerald-400/70 bg-emerald-400/10 backdrop-blur-sm hover:bg-emerald-400/20 text-emerald-400 hover:text-white hover:border-emerald-500 shadow-sm hover:shadow-md active:translate-y-0"
                             >
                                 <motion.svg
