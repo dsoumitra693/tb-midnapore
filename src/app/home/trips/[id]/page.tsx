@@ -206,7 +206,7 @@ export default function TripPage() {
         >
           <a
             href={`https://wa.me/919564965458?text=I want to join the ${trip.title.replace(/\s+/g, '%20')} trip from ${trip.startDate}
-               link: https://travelbuddiesmidnapore.in/trips/${trip._id}`}
+               link: https://travelbuddiesmidnapore.in/home/trips/${trip._id}`}
             className="inline-flex items-center bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-3 px-6 rounded-lg shadow-md transition-all duration-200 gap-2"
             target="_blank"
             rel="noopener noreferrer"
