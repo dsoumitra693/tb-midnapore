@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: PageProps) {
     ],
     openGraph: {
       title: `${trip.title} | Travel Buddies Midnapore`,
-      description: `Special offer: ${formatPrice(trip.discountedCost)} (was ${formatPrice(trip.actualCost)}) - ${trip.description}`,
+      description: `Join our ${trip.durationDays}-day trip to ${trip.title}. From ${formatDateToLongString(trip.startDate)}. Price: ${formatPrice(trip.discountedCost)} - ${trip.description}`,
       url: `https://travelbuddiesmidnapore.in/home/trips/${trip._id}`,
       images: [
         {
