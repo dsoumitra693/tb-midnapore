@@ -22,7 +22,7 @@ export const metadata = {
     siteName: 'Travel Buddies Midnapore',
     images: [
       {
-        url: 'https://travelbuddiesmidnapore.in/og-image.jpg',
+        url: 'https://travelbuddiesmidnapore.in/team.jpeg',
         width: 1200,
         height: 630,
         alt: 'Travel Buddies Midnapore',
@@ -35,8 +35,8 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Travel Buddies Midnapore',
     description: 'Join group trips or plan your own adventure with our travel community.',
-    images: ['https://travelbuddiesmidnapore.in/og-image.jpg'],
-    creator: '@yourtwitterhandle', // Replace with your Twitter handle
+    images: ['https://travelbuddiesmidnapore.in/team.jpeg'],
+    creator: '@TravelBuddiesMidnapore',
   },
   viewport: {
     width: 'device-width',

@@ -36,6 +36,63 @@ interface PageProps {
   params: Promise<{ id: string }>
 }
 
+// Add this above your TripPage component
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const { id } = await params
+  const trip = await fetchTrip(id);
+
+  if (!trip) {
+    return {
+      title: 'Trip Not Found',
+      description: 'The requested trip could not be found',
+    };
+  }
+
+  // Construct full image URL (ensure it's absolute)
+  const imageUrl = new URL(trip.image.asset.url, 'https://travelbuddiesmidnapore.in').toString();
+
+  // Price formatting helper
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(price);
+
+  return {
+    title: `${trip.title} | Travel Buddies Midnapore`,
+    description: `Join our ${trip.durationDays}-day trip to ${trip.title}. From ${formatDateToLongString(trip.startDate)}. Price: ${formatPrice(trip.discountedCost)} (Original: ${formatPrice(trip.actualCost)}) - ${trip.description}`,
+    keywords: [
+      trip.title,
+      'group trip',
+      'travel package',
+      'adventure tour',
+      ...trip.features,
+    ],
+    openGraph: {
+      title: `${trip.title} | Travel Buddies Midnapore`,
+      description: `Special offer: ${formatPrice(trip.discountedCost)} (was ${formatPrice(trip.actualCost)}) - ${trip.description}`,
+      url: `https://travelbuddiesmidnapore.in/home/trips/${trip._id}`,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: trip.image.alt || trip.title,
+        },
+      ],
+      publishedTime: new Date().toISOString(),
+      tags: ['Travel', 'Adventure', 'Group Trips'],
+    },
+    facebook: {
+      card: 'summary_large_image',
+      title: `${trip.title} | Travel Buddies Midnapore`,
+      description: `🔥 Special Price: ${formatPrice(trip.discountedCost)} | ${trip.description.slice(0, 150)}...`,
+      images: [imageUrl],
+    },
+    alternates: {
+      canonical: `https://travelbuddiesmidnapore.in/home/trips/${trip._id}`,
+    },
+  };
+}
+
+
 export default async function TripPage({ params }: PageProps) {
   const { id } = await params
   const trip = await fetchTrip(id)
