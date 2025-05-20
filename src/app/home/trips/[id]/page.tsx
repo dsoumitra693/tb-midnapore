@@ -1,16 +1,17 @@
-"use client";
-
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeftIcon, CalendarDaysIcon, ClockIcon, CheckIcon } from '@heroicons/react/24/outline'
-import { motion } from 'framer-motion'
-import { useParams } from 'next/navigation'
-import useOneTrip from '@/hooks/useOneTrip';
+import { fetchTrip } from '@/hooks/useOneTrip';
 import { formatDateToLongString } from '@/utils';
 import InfoItem from '@/components/trip-info-item';
 import PriceItem from '@/components/price-item';
 import ItinerarySection from '@/components/ininerary-section';
 import InclusionsSection from '@/components/inclusion-section';
+
+import MotionHeader from '@/components/motion-header'
+import MotionSection from '@/components/motion-section';
+import MotionDiv from '@/components/motion-div';
+import MotionH3 from '@/components/motion-h3';
 
 export interface Trip {
   _id: string;
@@ -31,12 +32,14 @@ export interface Trip {
   itinerary: { day: string; details: string[] }[];
 }
 
-export default function TripPage() {
-  const { id } = useParams()
-  const { trip, loading, error } = useOneTrip(id as string)
+interface PageProps {
+  params: Promise<{ id: string }>
+}
 
-  if (loading) return <LoadingState />
-  if (error) return <ErrorState />
+export default async function TripPage({ params }: PageProps) {
+  const { id } = await params
+  const trip = await fetchTrip(id)
+
   if (!trip) return <NotFoundState />
 
   return (
@@ -47,7 +50,7 @@ export default function TripPage() {
         <div className="absolute top-1/3 -left-40 w-80 h-80 rounded-full bg-purple-600/5 blur-3xl"></div>
       </div>
       {/* Header */}
-      <motion.header
+      <MotionHeader
         className="sticky top-0 bg-gray-800/60 backdrop-blur-md z-10 border-b border-white/5"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -65,11 +68,11 @@ export default function TripPage() {
             {trip.title.slice(0, 25) + (trip.title.length > 25 ? '...' : '')}
           </h1>
         </div>
-      </motion.header>
+      </MotionHeader>
 
       <main className="container mx-auto px-4 py-6 max-w-5xl">
         {/* Hero Image */}
-        <motion.div
+        <MotionDiv
           className="relative aspect-[16/9] rounded-xl overflow-hidden mb-6 shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -99,17 +102,24 @@ export default function TripPage() {
               )}
             </div>
           </div>
-        </motion.div>
+        </MotionDiv>
 
         {/* Trip Overview */}
-        <motion.section
+        <MotionSection
           className="mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="bg-gray-700/20 backdrop-blur-md rounded-xl border border-white/5 p-5 shadow-sm">
-            <h2 className="text-xl font-medium text-emerald-400 mb-4">Trip Overview</h2>
+          <div className="bg-gray-900/40 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 border border-white/5">
+            <MotionH3
+              className="text-2xl font-bold text-emerald-400 mb-4"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              Trip Overview
+            </MotionH3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <InfoItem
@@ -134,17 +144,24 @@ export default function TripPage() {
               </div>
             )}
           </div>
-        </motion.section>
+        </MotionSection>
 
         {/* Features */}
-        <motion.section
+        <MotionSection
           className="mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <div className="bg-gray-700/20 backdrop-blur-md rounded-xl border border-white/5 p-5 shadow-sm">
-            <h2 className="text-xl font-medium text-emerald-400 mb-4">Trip Features</h2>
+          <div className="bg-gray-900/40 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 border border-white/5">
+            <MotionH3
+              className="text-2xl font-bold text-emerald-400 mb-4"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              Trip Features
+            </MotionH3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {trip.features.map((feature, idx) => (
@@ -160,31 +177,38 @@ export default function TripPage() {
               ))}
             </div>
           </div>
-        </motion.section>
+        </MotionSection>
 
         {/* Meals Section */}
         {trip.meals && trip.meals.length > 0 && (
-          <motion.section
+          <MotionSection
             className="mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <div className="bg-gray-700/20 backdrop-blur-md rounded-xl border border-white/5 p-5 shadow-sm">
-              <h2 className="text-xl font-medium text-emerald-400 mb-4">Meals Included</h2>
+            <div className="bg-gray-900/40 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 border border-white/5">
+              <MotionH3
+                className="text-2xl font-bold text-emerald-400 mb-4"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                Meals Included
+              </MotionH3>
 
               <div className="flex flex-wrap gap-2">
                 {trip.meals.map((meal, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-emerald-500/10 text-emerald-300 rounded-lg text-sm"
+                    className="p-3 bg-emerald-500/10 text-emerald-300 rounded-lg text-sm"
                   >
                     {meal}
                   </span>
                 ))}
               </div>
             </div>
-          </motion.section>
+          </MotionSection>
         )}
 
         {/* Itinerary Section */}
@@ -198,7 +222,7 @@ export default function TripPage() {
         )}
 
         {/* Book Now CTA */}
-        <motion.div
+        <MotionDiv
           className="fixed bottom-6 right-6 md:static md:mt-8 md:flex md:justify-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -215,43 +239,12 @@ export default function TripPage() {
             <span className="hidden sm:inline text-base">Book This Trip</span>
             <span className="sm:hidden text-base">Book Now</span>
           </a>
-        </motion.div>
+        </MotionDiv>
       </main>
     </div>
   )
 }
 
-// Loading, Error and Not Found States
-function LoadingState() {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900 flex items-center justify-center">
-      <div className="flex flex-col items-center">
-        <div className="w-12 h-12 border-2 border-gray-700 border-t-emerald-500 rounded-full animate-spin"></div>
-        <p className="mt-4 text-emerald-400 text-base">Loading trip details...</p>
-      </div>
-    </div>
-  )
-}
-
-function ErrorState() {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900 flex items-center justify-center p-4">
-      <div className="bg-gray-700/40 backdrop-blur-md p-6 rounded-lg border border-red-500/20 max-w-md w-full">
-        <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
-          <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-        </div>
-        <h2 className="text-xl font-medium text-center text-white mb-2">Error Loading Trip</h2>
-        <div className="mt-6 flex justify-center">
-          <Link href="/trips" className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-base">
-            Back to All Trips
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 function NotFoundState() {
   return (

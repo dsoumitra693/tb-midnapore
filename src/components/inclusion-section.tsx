@@ -1,16 +1,18 @@
-import { motion } from 'framer-motion'
 import { CheckIcon } from '@heroicons/react/24/outline'
+import MotionH3 from './motion-h3'
+import MotionSection from './motion-section'
+import MotionDiv from './motion-div'
 
 export default function InclusionsSection({ inclusions }: { inclusions: string[] }) {
     return (
-      <motion.section
+      <MotionSection
         className="bg-gray-900/40 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 border border-white/5"
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.25 }}
       >
-        <motion.h3
+        <MotionH3
           className="text-2xl font-bold mb-6 text-emerald-400 relative inline-block"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -18,10 +20,10 @@ export default function InclusionsSection({ inclusions }: { inclusions: string[]
         >
           Inclusions
           <span className="absolute left-0 -bottom-2 w-2/3 h-1 bg-emerald-500/40 rounded-full blur-sm"></span>
-        </motion.h3>
+        </MotionH3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {inclusions.map((item, i) => (
-            <motion.div
+            <MotionDiv
               key={i}
               className="flex items-center gap-3 p-3 bg-gray-800/30 backdrop-blur-sm rounded-lg border border-white/5 group hover:bg-emerald-900/20 transition-colors"
               initial={{ opacity: 0, y: 10 }}
@@ -34,9 +36,9 @@ export default function InclusionsSection({ inclusions }: { inclusions: string[]
                 <CheckIcon className="w-5 h-5 text-emerald-400" />
               </div>
               <span className="text-gray-200 group-hover:text-white transition-colors">{item}</span>
-            </motion.div>
+            </MotionDiv>
           ))}
         </div>
-      </motion.section>
+      </MotionSection>
     )
   }
