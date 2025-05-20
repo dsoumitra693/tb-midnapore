@@ -5,7 +5,6 @@ export default async function uploadTestimonial({
     name,
     location,
     text,
-    avatarUrl
 }:ITestimonial) {
     try {
         
@@ -14,12 +13,7 @@ export default async function uploadTestimonial({
         name,
         location,
         text,
-        avatar: {
-            asset: {
-                _type: 'reference',
-                _ref: avatarUrl
-            }
-        }
+        avatar: null
     })
 
     return created
