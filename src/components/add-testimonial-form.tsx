@@ -17,6 +17,7 @@ export default function AddTestimonialForm({ form, handleChange, handleSubmit, i
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
+      id="review-form"
     >
       <motion.h3
         className="text-2xl font-bold text-emerald-400 mb-6 relative inline-block"

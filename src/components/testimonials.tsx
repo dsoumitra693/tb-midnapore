@@ -73,7 +73,7 @@ export default function TestimonialsSection({ testimonials: initialTestimonials 
   };
 
   return (
-    <section className="py-16 bg-gray-800">
+    <section className="py-16 bg-gray-800" id="testimonials">
       <div className="container mx-auto px-4">
         <motion.div
           className="text-center mb-12"
