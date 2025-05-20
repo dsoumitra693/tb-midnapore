@@ -36,8 +36,7 @@ interface PageProps {
   params: Promise<{ id: string }>
 }
 
-// Add this above your TripPage component
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({ params }: PageProps) {
   const { id } = await params
   const trip = await fetchTrip(id);
 
