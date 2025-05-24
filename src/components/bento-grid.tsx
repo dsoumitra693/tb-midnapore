@@ -36,7 +36,7 @@ interface BentoGridItemProps {
 
 // Enhanced intersection observer hook with better performance
 function useIntersectionObserver(
-    ref: React.RefObject<HTMLElement>,
+    ref: React.RefObject<HTMLElement | null>,
     options?: IntersectionObserverInit
 ) {
     const [isInView, setIsInView] = useState(false);
@@ -334,7 +334,6 @@ export const BentoGridItem = memo(forwardRef<HTMLDivElement, BentoGridItemProps>
                 role="button"
                 tabIndex={0}
                 aria-label={`${typeof title === 'string' ? title : 'Media item'}${category ? ` in ${category}` : ''}`}
-                aria-describedby={subtitle ? `${id}-subtitle` : undefined}
             >
                 {/* Enhanced media container */}
                 <div className="relative h-full w-full overflow-hidden">
@@ -471,7 +470,6 @@ export const BentoGridItem = memo(forwardRef<HTMLDivElement, BentoGridItemProps>
 
                     {subtitle && (
                         <motion.p
-                            id={`${id}-subtitle`}
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.3 }}

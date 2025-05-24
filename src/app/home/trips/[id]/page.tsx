@@ -12,6 +12,7 @@ import MotionHeader from '@/components/motion-header'
 import MotionSection from '@/components/motion-section';
 import MotionDiv from '@/components/motion-div';
 import MotionH3 from '@/components/motion-h3';
+import ShareBtn from '@/components/share-btn';
 
 export interface Trip {
   _id: string;
@@ -276,6 +277,8 @@ export default async function TripPage({ params }: PageProps) {
         {trip.inclusions && trip.inclusions.length > 0 && (
           <InclusionsSection inclusions={trip.inclusions} />
         )}
+        {/* Share */}
+        <ShareBtn trip={trip} />
 
         {/* Book Now CTA */}
         <MotionDiv

@@ -1,3 +1,5 @@
+import { Trip } from "./types"
+
 export function formatDateToLongString(date: string | Date): string {
   const d = new Date(date)
 
@@ -9,7 +11,44 @@ export function formatDateToLongString(date: string | Date): string {
 }
 
 
-export function getSpanClass(index: number): "1x1" | "1x2" | "2x1" | "2x2" {
-  const patterns: ("1x1" | "1x2" | "2x1" | "2x2")[] = ["1x1", "1x2", "2x1", "2x2"];
-  return patterns[index % patterns.length];
-}
+export const constructTripShareMsg = (trip: Trip) => {
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+    });
+  };
+
+  const dateRange = `${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}`;
+
+  const itineraryText = trip.itinerary
+    .map(
+      (item, index) =>
+        `*Day ${index + 1}* ${item.day ? "- " + item.day : ""}\n👉 ${item.details.join(", ")}`
+    )
+    .join("\n\n");
+
+  const mealsText = trip.meals.length > 0 ? `♦️Meal: ${trip.meals.join(", ")}` : "";
+
+  const inclusionsText =
+    trip.inclusions.length > 0 ? `\n\nIncluding:- ${trip.inclusions.join(", ")}.` : "";
+
+  const budgetText =
+    trip.discountedCost || trip.currentPrice
+      ? `\n\n*Budget:* ₹${trip.discountedCost || trip.currentPrice}/person`
+      : "";
+
+  return `⭕ *${trip.title} (${trip.durationNights} Nights ${trip.durationDays} Days)* 🛟
+Date: ${dateRange}
+
+👉 *Howrah to Sealdah Full Package*
+
+${itineraryText}
+
+${mealsText}${inclusionsText}${budgetText}
+
+👉 Contact: 9564965458
+🔸 Page link: 
+https://www.facebook.com/TravelBuddiesMidnapore`;
+};
