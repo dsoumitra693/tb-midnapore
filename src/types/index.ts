@@ -24,3 +24,11 @@ export interface Trip {
     description: string;
     itinerary: { day: string; details: string[] }[];
 }
+
+export interface GalleryMedia {
+    _id: string;
+    source: string;
+    type: "imageItem" | "videoItem";
+    alt: string;
+    caption: string;
+}

@@ -5,10 +5,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function Navbar({navbarData}:{navbarData:{
-  title:string;
-  subtitle:string;
-}}) {
+export default function Navbar({ navbarData }: {
+  navbarData: {
+    title: string;
+    subtitle: string;
+  }
+}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const mobileMenuRef = useRef<HTMLDivElement | null>(null)
@@ -39,13 +41,14 @@ export default function Navbar({navbarData}:{navbarData:{
   const navigationLinks = [
     { href: '/home', label: 'Home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
     { href: '/home/trips', label: 'Trips', icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { href: '/home/gallery', label: 'Gallery', icon: 'M4 16l4-4a3 3 0 014 0l4 4m0 0h4M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M4 16V7a2 2 0 012-2h12a2 2 0 012 2v9' },
     { href: '/home#about-us', label: 'About', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
     { href: '/home#contact', label: 'Contact', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' }
   ]
 
 
   return (
-    <motion.header 
+    <motion.header
       className="sticky top-0 z-50 bg-gradient-to-r from-gray-900/90 to-gray-800/90 backdrop-blur-lg border-b border-gray-700/50 shadow-lg"
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -85,17 +88,16 @@ export default function Navbar({navbarData}:{navbarData:{
               >
                 <Link
                   href={link.href}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                    isActive(link.href)
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${isActive(link.href)
                       ? 'text-emerald-300 bg-gradient-to-br from-emerald-900/60 to-emerald-800/40 border border-emerald-700/50 shadow-md'
                       : 'text-gray-300 hover:text-white hover:bg-gray-800/40 border border-transparent'
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </Link>
               </motion.div>
             ))}
-            
+
             {/* Book Now Button */}
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -184,11 +186,10 @@ export default function Navbar({navbarData}:{navbarData:{
                 >
                   <Link
                     href={link.href}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all ${
-                      isActive(link.href)
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all ${isActive(link.href)
                         ? 'text-emerald-300 bg-gradient-to-r from-emerald-900/40 to-emerald-800/20 border border-emerald-700/30 shadow-md'
                         : 'text-gray-300 hover:text-white hover:bg-gray-800/40 border border-transparent'
-                    }`}
+                      }`}
                     onClick={() => setMobileMenuOpen(false)}
                     aria-current={isActive(link.href) ? 'page' : undefined}
                   >
@@ -208,9 +209,9 @@ export default function Navbar({navbarData}:{navbarData:{
                 </motion.div>
               ))}
             </nav>
-            
+
             {/* Action Button */}
-            <motion.div 
+            <motion.div
               className="p-4 pt-2"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

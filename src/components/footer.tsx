@@ -142,6 +142,7 @@ export default function Footer({ footerData }: {
               {[
                 { href: "/home", label: "Home" },
                 { href: "/home/trips", label: "Trips" },
+                { href: "/home/gallery", label: "Gallery" },
                 { href: "/home/#about-us", label: "About Us" },
                 { href: "/home/#contact", label: "Contact" }
               ].map((item) => (
