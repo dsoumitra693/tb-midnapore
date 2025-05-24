@@ -25,7 +25,7 @@ export const constructTripShareMsg = (trip: Trip) => {
   const itineraryText = trip.itinerary
     .map(
       (item, index) =>
-        `*Day ${index + 1}* ${item.day ? "- " + item.day : ""}\n👉 ${item.details.join(", ")}`
+        `*Day ${index + 1}* \n👉 ${item.details.join(", ")}`
     )
     .join("\n\n");
 
@@ -48,7 +48,5 @@ ${itineraryText}
 
 ${mealsText}${inclusionsText}${budgetText}
 
-👉 Contact: 9564965458
-🔸 Page link: 
-https://www.facebook.com/TravelBuddiesMidnapore`;
+👉 Contact: 9564965458`;
 };
