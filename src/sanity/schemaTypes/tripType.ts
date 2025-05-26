@@ -132,7 +132,8 @@ export const tripType = defineType({
     ],
     exclusions: [
       "Anything not mentioned in inclusion list",
-      "Meals during Train Journey, Any kind of personal Expenses",
+      "Meals during Train Journey", 
+      "Any kind of personal Expenses",
       "Unscheduled or extended stay due to road blocks, Landslides, Cost of Evacuation in case of emergency."
     ],
   }
