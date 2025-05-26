@@ -25,7 +25,7 @@ export const constructTripShareMsg = (trip: Trip) => {
   const itineraryText = trip.itinerary
     .map(
       (item, index) =>
-        `*Day ${index + 1}* \n👉 ${item.details.join(", ")}`
+        `*Day ${index + 1}* \n ${item.details.join(", ")}`
     )
     .join("\n\n");
 
@@ -39,7 +39,7 @@ export const constructTripShareMsg = (trip: Trip) => {
       ? `\n\n*Budget:* ₹${trip.discountedCost || trip.currentPrice}/person`
       : "";
 
-  return `⭕ *${trip.title} (${trip.durationNights} Nights ${trip.durationDays} Days)* 🛟
+  return `*${trip.title} (${trip.durationNights} Nights ${trip.durationDays} Days)*
 Date: ${dateRange}
 
 👉 *Howrah to Sealdah Full Package*
@@ -48,5 +48,8 @@ ${itineraryText}
 
 ${mealsText}${inclusionsText}${budgetText}
 
-👉 Contact: 9564965458`;
+👉 Contact: 9564965458
+👉 Official Website: https://travelbuddiesmidnapore.in/home/trips/${trip._id}
+👉 facebook Page: https://www.facebook.com/travelbuddiesmidnapore`;
+
 };

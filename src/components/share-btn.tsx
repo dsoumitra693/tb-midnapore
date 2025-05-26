@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 
 export default function ShareBtn({ trip }: { trip: Trip }) {
     const shareMsg = constructTripShareMsg(trip);
-    const shareUrl = `https://travelbuddiesmidnapore.in/home/trips/${trip._id}`;
 
     const handleShare = async () => {
         if (navigator.share) {
@@ -15,7 +14,6 @@ export default function ShareBtn({ trip }: { trip: Trip }) {
                 await navigator.share({
                     title: trip.title,
                     text: shareMsg,
-                    url: shareUrl,
                 });
             } catch (err) {
                 console.error("Share failed:", err);
