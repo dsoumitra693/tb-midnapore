@@ -6,13 +6,13 @@ import { formatDateToLongString } from '@/utils';
 import InfoItem from '@/components/trip-info-item';
 import PriceItem from '@/components/price-item';
 import ItinerarySection from '@/components/ininerary-section';
-import InclusionsSection from '@/components/inclusion-section';
 
 import MotionHeader from '@/components/motion-header'
 import MotionSection from '@/components/motion-section';
 import MotionDiv from '@/components/motion-div';
 import MotionH3 from '@/components/motion-h3';
 import ShareBtn from '@/components/share-btn';
+import DetailSection from '@/components/detail-section';
 
 export interface Trip {
   _id: string;
@@ -238,34 +238,9 @@ export default async function TripPage({ params }: PageProps) {
 
         {/* Meals Section */}
         {trip.meals && trip.meals.length > 0 && (
-          <MotionSection
-            className="mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            <div className="bg-gray-900/40 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-2xl ring-1 ring-white/10 border border-white/5">
-              <MotionH3
-                className="text-2xl font-bold text-emerald-400 mb-4"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                Meals Included
-              </MotionH3>
-
-              <div className="flex flex-wrap gap-2">
-                {trip.meals.map((meal, idx) => (
-                  <span
-                    key={idx}
-                    className="p-3 bg-emerald-500/10 text-emerald-300 rounded-lg text-sm"
-                  >
-                    {meal}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </MotionSection>
+          <DetailSection
+            title="Meals Included"
+            data={trip.meals}/>
         )}
 
         {/* Itinerary Section */}
@@ -275,7 +250,12 @@ export default async function TripPage({ params }: PageProps) {
 
         {/* Inclusions Section */}
         {trip.inclusions && trip.inclusions.length > 0 && (
-          <InclusionsSection inclusions={trip.inclusions} />
+          <DetailSection title="Inclusions" data={trip.inclusions} />
+        )}
+
+        {/* Inclusions Section */}
+        {trip.exclusions && trip.exclusions.length > 0 && (
+          <DetailSection title="Exclusions" data={trip.exclusions} />
         )}
         {/* Share */}
         <ShareBtn trip={trip} />

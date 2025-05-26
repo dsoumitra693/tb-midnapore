@@ -114,6 +114,26 @@ export const tripType = defineType({
       title: 'Inclusions',
       of: [{ type: 'string' }],
       validation: Rule => Rule.required().min(1)
+    }),
+    defineField({
+      name: 'exclusions',
+      type: 'array',
+      title: 'Exclusions',
+      of: [{ type: 'string' }],
     })
-  ]
+  ],
+  initialValue: {
+    inclusions: [
+      "Fooding",
+      "Lodging",
+      "Local Transport",
+      "Train Ticket",
+      "Entry Fees"
+    ],
+    exclusions: [
+      "Anything not mentioned in inclusion list",
+      "Meals during Train Journey, Any kind of personal Expenses",
+      "Unscheduled or extended stay due to road blocks, Landslides, Cost of Evacuation in case of emergency."
+    ],
+  }
 })

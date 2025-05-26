@@ -22,6 +22,7 @@ export const fetchTrip = async (
       discountedCost,
       meals,
       inclusions,
+      exclusions,
       itinerary,
       description,
       features

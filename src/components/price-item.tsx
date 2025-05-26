@@ -9,7 +9,7 @@ export default function PriceItem({ originalPrice, currentPrice }: {
 
     return (
         <MotionDiv
-            className="flex items-center gap-4 p-3 bg-gray-800/40 backdrop-blur-md border border-white/5 rounded-xl shadow-lg"
+            className="mt-3 flex items-center gap-4 p-3 bg-gray-800/40 backdrop-blur-md border border-white/5 rounded-xl shadow-lg"
             whileHover={{ y: -2, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
             transition={{ duration: 0.2 }}
         >

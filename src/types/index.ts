@@ -21,6 +21,7 @@ export interface Trip {
     meals: string[];
     features: string[];
     inclusions: string[];
+    exclusions: string[];
     description: string;
     itinerary: { day: string; details: string[] }[];
 }
