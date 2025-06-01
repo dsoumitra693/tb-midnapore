@@ -244,7 +244,7 @@ export default function Footer({ footerData }: {
         >
           &copy; {new Date().getFullYear()} {footerData.pageDetails.title}{" "}{footerData.pageDetails.subtitle}. All rights reserved.
           <p className='mt-4'>
-            Made with ❤️ by <a href="https://www.instagram.com/soumo.das_" className="text-emerald-400 text-bold hover:text-emerald-500 transition-colors" target="_blank" rel="noopener noreferrer">Soumo</a>
+            Made with ❤️ by <a href="https://www.instagram.com/soumzy.d_" className="text-emerald-400 text-bold hover:text-emerald-500 transition-colors" target="_blank" rel="noopener noreferrer">Soumo</a>
           </p>
         </motion.div>
       </div>
