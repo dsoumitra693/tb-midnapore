@@ -14,14 +14,13 @@ import MotionH3 from '@/components/motion-h3';
 import ShareBtn from '@/components/share-btn';
 import DetailSection from '@/components/detail-section';
 
-
 interface PageProps {
-  params: Promise<{ id: string }>;
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: Promise<{ id: string }>; // Changed to Promise
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>; // Changed to Promise
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { id } = await params
+  const { id } = await params; // Await the params
   const trip = await fetchTrip(id);
 
   if (!trip) {
@@ -75,14 +74,13 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-
 export default async function TripPage({ params, searchParams }: PageProps) {
-  const { id } = await params
-  const trip = await fetchTrip(id)
+  const { id } = await params; // Await the params
+  const resolvedSearchParams = searchParams ? await searchParams : {}; // Await searchParams
+  const trip = await fetchTrip(id);
 
   if (!trip) return <NotFoundState />
 
-  console.log("Trip data:", trip)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900 text-gray-100 font-sans">
@@ -91,6 +89,7 @@ export default async function TripPage({ params, searchParams }: PageProps) {
         <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-emerald-600/5 blur-3xl"></div>
         <div className="absolute top-1/3 -left-40 w-80 h-80 rounded-full bg-purple-600/5 blur-3xl"></div>
       </div>
+      
       {/* Header */}
       <MotionHeader
         className="sticky top-0 bg-gray-800/60 backdrop-blur-md z-10 border-b border-white/5"
@@ -182,8 +181,7 @@ export default async function TripPage({ params, searchParams }: PageProps) {
                 currentPrice: trip.discountedCost,
                 perPersonPrice: trip.discountedCost
               }]}
-              selectedTier={searchParams?.tier ? parseInt(searchParams.tier as string) : 0}
-
+              selectedTier={resolvedSearchParams?.tier ? parseInt(resolvedSearchParams.tier as string) : 0}
             />
 
             {/* Description */}
@@ -245,10 +243,11 @@ export default async function TripPage({ params, searchParams }: PageProps) {
           <DetailSection title="Inclusions" data={trip.inclusions} />
         )}
 
-        {/* Inclusions Section */}
+        {/* Exclusions Section */}
         {trip.exclusions && trip.exclusions.length > 0 && (
           <DetailSection title="Exclusions" data={trip.exclusions} />
         )}
+        
         {/* Share */}
         <ShareBtn trip={trip} />
 
@@ -276,7 +275,7 @@ export default async function TripPage({ params, searchParams }: PageProps) {
   )
 }
 
-
+// Rest of your components remain the same...
 function NotFoundState() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900 flex items-center justify-center p-4">

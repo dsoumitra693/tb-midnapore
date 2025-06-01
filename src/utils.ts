@@ -35,8 +35,8 @@ export const constructTripShareMsg = (trip: Trip) => {
     trip.inclusions.length > 0 ? `\n\nIncluding:- ${trip.inclusions.join(", ")}.` : "";
 
   const budgetText =
-    trip.discountedCost || trip.currentPrice
-      ? `\n\n*Budget:* ₹${trip.discountedCost || trip.currentPrice}/person`
+    trip.discountedCost
+      ? `\n\n*Budget:* ₹${trip.discountedCost}/person`
       : "";
 
   return `*${trip.title} (${trip.durationNights} Nights ${trip.durationDays} Days)*
