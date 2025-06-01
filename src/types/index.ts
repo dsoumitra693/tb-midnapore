@@ -12,8 +12,7 @@ export interface Trip {
     title: string;
     startDate: string;
     endDate: string;
-    originalPrice: number;
-    currentPrice: number;
+    priceTiers: PriceTier[];
     durationDays: number;
     durationNights: number;
     actualCost: number;
@@ -24,6 +23,14 @@ export interface Trip {
     exclusions: string[];
     description: string;
     itinerary: { day: string; details: string[] }[];
+}
+
+export interface PriceTier {
+    peopleCount: number;
+    label: string;
+    originalPrice?: number;
+    currentPrice: number;
+    perPersonPrice: number;
 }
 
 export interface GalleryMedia {

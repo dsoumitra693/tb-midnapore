@@ -53,13 +53,55 @@ export const tripType = defineType({
       name: 'actualCost',
       type: 'number',
       title: 'Actual Cost',
-      validation: Rule => Rule.required().min(0)
     }),
     defineField({
       name: 'discountedCost',
       type: 'number',
       title: 'Discounted Cost',
-      validation: Rule => Rule.min(0)
+    }),
+    defineField({
+      name: 'priceTiers',
+      type: 'array',
+      title: 'Price Tiers',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'priceTier',
+          fields: [
+            defineField({
+              name: 'peopleCount',
+              type: 'number',
+              title: 'People Count',
+              validation: Rule => Rule.required().min(1)
+            }),
+            defineField({
+              name: 'label',
+              type: 'string',
+              title: 'Label',
+              validation: Rule => Rule.required()
+            }),
+            defineField({
+              name: 'originalPrice',
+              type: 'number',
+              title: 'Original Price',
+              validation: Rule => Rule.min(0)
+            }),
+            defineField({
+              name: 'currentPrice',
+              type: 'number',
+              title: 'Current Price',
+              validation: Rule => Rule.required().min(0)
+            }),
+            defineField({
+              name: 'perPersonPrice',
+              type: 'number',
+              title: 'Per Person Price',
+              validation: Rule => Rule.required().min(0)
+            })
+          ]
+        })
+      ],
+      validation: Rule => Rule.required().min(1)
     }),
     defineField({
       name: 'itinerary',
@@ -82,8 +124,7 @@ export const tripType = defineType({
               of: [{ type: 'string' }],
               validation: Rule => Rule.required().min(1)
             })
-          ],
-          validation: Rule => Rule.required()
+          ]
         })
       ],
       validation: Rule => Rule.required().min(1)
@@ -104,7 +145,7 @@ export const tripType = defineType({
     defineField({
       name: 'meals',
       type: 'array',
-      title: 'Meal',
+      title: 'Meals',
       of: [{ type: 'string' }],
       validation: Rule => Rule.required().min(1)
     }),
@@ -119,7 +160,7 @@ export const tripType = defineType({
       name: 'exclusions',
       type: 'array',
       title: 'Exclusions',
-      of: [{ type: 'string' }],
+      of: [{ type: 'string' }]
     })
   ],
   initialValue: {
@@ -135,6 +176,6 @@ export const tripType = defineType({
       "Meals during Train Journey", 
       "Any kind of personal Expenses",
       "Unscheduled or extended stay due to road blocks, Landslides, Cost of Evacuation in case of emergency."
-    ],
+    ]
   }
-})
+});

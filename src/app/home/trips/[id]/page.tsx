@@ -14,27 +14,10 @@ import MotionH3 from '@/components/motion-h3';
 import ShareBtn from '@/components/share-btn';
 import DetailSection from '@/components/detail-section';
 
-export interface Trip {
-  _id: string;
-  image: { asset: { url: string }; alt: string };
-  title: string;
-  startDate: string;
-  endDate: string;
-  originalPrice: number;
-  currentPrice: number;
-  durationDays: number;
-  durationNights: number;
-  actualCost: number;
-  discountedCost: number;
-  meals: string[];
-  features: string[];
-  inclusions: string[];
-  description: string;
-  itinerary: { day: string; details: string[] }[];
-}
 
 interface PageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata({ params }: PageProps) {
@@ -93,11 +76,13 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 
-export default async function TripPage({ params }: PageProps) {
+export default async function TripPage({ params, searchParams }: PageProps) {
   const { id } = await params
   const trip = await fetchTrip(id)
 
   if (!trip) return <NotFoundState />
+
+  console.log("Trip data:", trip)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-800 to-gray-900 text-gray-100 font-sans">
@@ -190,8 +175,15 @@ export default async function TripPage({ params }: PageProps) {
             </div>
 
             <PriceItem
-              originalPrice={trip.actualCost}
-              currentPrice={trip.discountedCost}
+              priceTiers={trip.priceTiers?.length ? trip.priceTiers : [{
+                peopleCount: 1,
+                label: 'Standard',
+                originalPrice: trip.actualCost,
+                currentPrice: trip.discountedCost,
+                perPersonPrice: trip.discountedCost
+              }]}
+              selectedTier={searchParams?.tier ? parseInt(searchParams.tier as string) : 0}
+
             />
 
             {/* Description */}
@@ -240,7 +232,7 @@ export default async function TripPage({ params }: PageProps) {
         {trip.meals && trip.meals.length > 0 && (
           <DetailSection
             title="Meals Included"
-            data={trip.meals}/>
+            data={trip.meals} />
         )}
 
         {/* Itinerary Section */}
