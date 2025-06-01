@@ -29,13 +29,11 @@ export const tripType = defineType({
       name: 'startDate',
       type: 'date',
       title: 'Start Date',
-      validation: Rule => Rule.required()
     }),
     defineField({
       name: 'endDate',
       type: 'date',
       title: 'End Date',
-      validation: Rule => Rule.required()
     }),
     defineField({
       name: 'durationDays',

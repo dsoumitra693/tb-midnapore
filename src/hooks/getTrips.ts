@@ -13,9 +13,10 @@ export const fetchTrips = async ({
 
   const baseFilter = `_type == "trip"`
   const searchFilter = isSearching ? `&& title match $searchText` : ``
+
   const query = `
     *[${baseFilter} ${searchFilter}]
-    | order(startDate asc)
+    | order(coalesce(startDate, "") asc, title asc)
     [$offset...$offset + $limit] {
       _id,
       title,
