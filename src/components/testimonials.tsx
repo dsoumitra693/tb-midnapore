@@ -1,14 +1,15 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ITestimonial } from "@/types";
 import TestimonialCard from "./testimonial-card";
 import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence
 import AddTestimonialForm from "./add-testimonial-form";
 import uploadTestimonial from "@/hooks/uploadTestimonial";
+import { getTestimonials } from "@/hooks/getTestimonials";
 
-export default function TestimonialsSection({ testimonials: initialTestimonials }: { testimonials: ITestimonial[] }) {
-  const [testimonials, setTestimonials] = useState(initialTestimonials);
+export default function TestimonialsSection() {
+  const [testimonials, setTestimonials] = useState([] as ITestimonial[]);
   const [form, setForm] = useState<ITestimonial>({
     name: "",
     location: "",
@@ -71,6 +72,15 @@ export default function TestimonialsSection({ testimonials: initialTestimonials 
       }
     }
   };
+
+  useEffect(() => {
+    async function fetchTestimonials() {
+      const testimonialsData: ITestimonial[] = await getTestimonials();
+      setTestimonials(testimonialsData);
+    }
+
+    fetchTestimonials();
+  }, []);
 
   return (
     <section className="py-16 bg-gray-800" id="testimonials">
