@@ -40,3 +40,14 @@ export interface GalleryMedia {
     alt: string;
     caption: string;
 }
+
+export interface Notice {
+    id: string;
+    type: 'info' | 'warning' | 'success' | 'announcement';
+    title: string;
+    message: string;
+    date: string;
+    actionText?: string;
+    actionLink?: string;
+    dismissible?: boolean;
+}
