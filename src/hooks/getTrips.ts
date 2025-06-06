@@ -15,25 +15,26 @@ export const fetchTrips = async ({
   const searchFilter = isSearching ? `&& title match $searchText` : ``
 
   const query = `
-    *[${baseFilter} ${searchFilter}]
-    | order(coalesce(startDate, "") asc, title asc)
-    [$offset...$offset + $limit] {
-      _id,
-      title,
-      image {
-        asset-> {
-          url
-        },
-        alt
+  *[${baseFilter} ${searchFilter}]
+  | order(coalesce(startDate, "9999-12-31") asc, title asc)
+  [$offset...$offset + $limit] {
+    _id,
+    title,
+    image {
+      asset-> {
+        url
       },
-      startDate,
-      endDate,
-      durationDays,
-      durationNights,
-      actualCost,
-      discountedCost
-    }
-  `
+      alt
+    },
+    startDate,
+    endDate,
+    durationDays,
+    durationNights,
+    actualCost,
+    discountedCost
+  }
+`
+
 
   const params: Record<string, number | string> = {
     offset,

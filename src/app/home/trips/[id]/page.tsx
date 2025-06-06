@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `${trip.title} | Travel Buddies Midnapore`,
-    description: `Join our ${trip.durationDays}-day trip to ${trip.title}. From ${formatDateToLongString(trip.startDate)}. Price: ${formatPrice(trip.discountedCost)} (Original: ${formatPrice(trip.actualCost)}) - ${trip.description}`,
+    description: `Join our ${trip.durationDays}-day trip to ${trip.title}. ${trip.startDate ? `From ${formatDateToLongString(trip.startDate)}.` : ""} Price: ${formatPrice(trip.discountedCost)} (Original: ${formatPrice(trip.actualCost)}) - ${trip.description}`,
     keywords: [
       trip.title,
       'group trip',
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps) {
     ],
     openGraph: {
       title: `${trip.title} | Travel Buddies Midnapore`,
-      description: `Join our ${trip.durationDays}-day trip to ${trip.title}. From ${formatDateToLongString(trip.startDate)}. Price: ${formatPrice(trip.discountedCost)} - ${trip.description}`,
+      description: `Join our ${trip.durationDays}-day trip to ${trip.title}. ${trip.startDate ? `From ${formatDateToLongString(trip.startDate)}.` : ""}. Price: ${formatPrice(trip.discountedCost)} - ${trip.description}`,
       url: `https://travelbuddiesmidnapore.in/home/trips/${trip._id}`,
       images: [
         {
@@ -89,7 +89,7 @@ export default async function TripPage({ params, searchParams }: PageProps) {
         <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-emerald-600/5 blur-3xl"></div>
         <div className="absolute top-1/3 -left-40 w-80 h-80 rounded-full bg-purple-600/5 blur-3xl"></div>
       </div>
-      
+
       {/* Header */}
       <MotionHeader
         className="sticky top-0 bg-gray-800/60 backdrop-blur-md z-10 border-b border-white/5"
@@ -165,7 +165,9 @@ export default async function TripPage({ params, searchParams }: PageProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <InfoItem
                 icon={CalendarDaysIcon}
-                text={`${formatDateToLongString(trip.startDate)} - ${formatDateToLongString(trip.endDate)}`}
+                text={trip.startDate && trip.endDate ?
+                  `${formatDateToLongString(trip.startDate)} - ${formatDateToLongString(trip.endDate)}`
+                  : 'Upcoming Trip'}
               />
               <InfoItem
                 icon={ClockIcon}
@@ -247,7 +249,7 @@ export default async function TripPage({ params, searchParams }: PageProps) {
         {trip.exclusions && trip.exclusions.length > 0 && (
           <DetailSection title="Exclusions" data={trip.exclusions} />
         )}
-        
+
         {/* Share */}
         <ShareBtn trip={trip} />
 
