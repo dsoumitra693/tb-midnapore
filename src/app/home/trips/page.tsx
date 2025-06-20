@@ -3,9 +3,13 @@ import Link from 'next/link';
 import TripCard from '@/components/trip-card';
 import { motion } from 'framer-motion';
 import { useTrips } from '@/hooks/useTrips';
+import { useState, useEffect } from 'react';
 
 export default function TripsPage() {
-    const {trips } = useTrips({})
+    const [searchTerm, setSearchTerm] = useState('');
+    const { trips, refetch } = useTrips({
+        searchText: searchTerm
+    });
 
     const container = {
         hidden: { opacity: 0 },
@@ -15,6 +19,32 @@ export default function TripsPage() {
                 staggerChildren: 0.1
             }
         }
+    };
+
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        if (searchTerm.length > 3 || searchTerm.length === 0) {
+            const timeoutId = setTimeout(() => {
+                if (!abortController.signal.aborted) {
+                    refetch();
+                }
+            }, 500);
+
+            return () => {
+                abortController.abort();
+                clearTimeout(timeoutId);
+            };
+        }
+
+        return () => {
+            abortController.abort();
+        };
+    }, [searchTerm, refetch]);
+
+
+    const handleInput = (value: string) => {
+        setSearchTerm(value);
     };
 
     return (
@@ -46,21 +76,21 @@ export default function TripsPage() {
                             </h1>
                         </div>
 
-                        {/* Search Bar
+                        {/* Search Bar */}
                         <div className="relative w-full md:w-auto">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <button onClick={() => refetch()} className="absolute inset-y-0 left-0 flex items-center pl-3 cursor-pointer">
                                 <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
-                            </div>
+                            </button>
                             <input
                                 type="search"
                                 className="w-full md:w-64 p-2.5 pl-10 text-sm bg-gray-800/70 border border-gray-700 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-gray-400"
                                 placeholder="Search destinations..."
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onChange={(e) => handleInput(e.target.value)}
                             />
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </motion.header>

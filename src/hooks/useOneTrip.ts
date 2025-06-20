@@ -41,7 +41,6 @@ export const fetchTrip = async (id: string): Promise<Trip | null> => {
       perPersonPrice: tier.currentPrice / tier.peopleCount
     })) : []
 
-    console.log('Enriched Price Tiers:', enrichedPriceTiers)
 
     return {
       ...trip,

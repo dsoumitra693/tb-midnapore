@@ -53,3 +53,11 @@ ${mealsText}${inclusionsText}${budgetText}
 👉 facebook Page: https://www.facebook.com/travelbuddiesmidnapore`;
 
 };
+
+export const debounce = (fn: (...args: unknown[]) => unknown, delay: number) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: unknown[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+}

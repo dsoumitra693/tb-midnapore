@@ -14,25 +14,29 @@ export const useTrips = ({
     const [trips, setTrips] = useState<Trip[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const getTrips = async () => {
+        try {
+            setLoading(true);
+            const trips = await fetchTrips({
+                offset,
+                limit,
+                searchText
+            });
+            setTrips(trips);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'Failed to fetch trips');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const getTrips = async () => {
-            try {
-                setLoading(true);
-                const trips = await fetchTrips({
-                    offset,
-                    limit,
-                    searchText
-                });
-                setTrips(trips);
-            } catch (error) {
-                setError(error instanceof Error ? error.message : 'Failed to fetch trips');
-            } finally {
-                setLoading(false);
-            }
-        };
         getTrips();
     }, []);
 
-    return { trips, loading, error};
+    const refetch = () => {
+        getTrips();
+    };
+
+    return { trips, loading, error, refetch};
 };
