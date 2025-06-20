@@ -60,18 +60,6 @@ export default function TestimonialsSection() {
     }
   };
 
-  const card = {
-    hidden: { opacity: 0, y: 40 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 80,
-        damping: 15
-      }
-    }
-  };
 
   useEffect(() => {
     async function fetchTestimonials() {
@@ -103,18 +91,7 @@ export default function TestimonialsSection() {
         >
           <AnimatePresence>
             {testimonials.map((testimonial) => (
-              <motion.div
-                key={testimonial._id}
-                variants={card}
-                initial="hidden"
-                animate="show"
-                exit="hidden"
-                whileHover={{ y: -8, boxShadow: "0 8px 24px rgba(16,185,129,0.15)" }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              >
-                <TestimonialCard testimonial={testimonial} />
-              </motion.div>
+              <TestimonialCard testimonial={testimonial} key={testimonial._id} />
             ))}
           </AnimatePresence>
         </motion.div>

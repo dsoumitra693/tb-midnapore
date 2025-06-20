@@ -72,10 +72,11 @@ export default function CustomTripSection() {
                             whileTap={{ scale: 0.96 }}
                             whileHover={{ scale: 1.04, boxShadow: "0 4px 32px 0 rgba(16,185,129,0.25)" }}
                             transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                            className="w-[50%] mx-auto min-w-[260px]"
                         >
                             <Link
                                 href="/home/custom-trip"
-                                className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-400/80 to-emerald-600/90 hover:from-emerald-500 hover:to-emerald-700 text-white font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2 group backdrop-blur-md"
+                                className="inline-flex items-center justify-center w-full px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-400/80 to-emerald-600/90 hover:from-emerald-500 hover:to-emerald-700 text-white font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2 group backdrop-blur-md"
                             >
                                 {/* Left Icon */}
                                 <motion.svg
